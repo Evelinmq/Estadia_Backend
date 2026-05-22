@@ -1,25 +1,22 @@
-package mx.edu.utez.JuventudxTemixco.models.Allies;
+package mx.edu.utez.JuventudxTemixco.models.municipalities;
+
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-
 @Entity
-@Table (name= "ally")
-public class BeanAlly {
+@Table (name = "Municipio")
+public class BeanMunicipality {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    @Column(columnDefinition = "LONGTEXT")
-    private byte[] image;
+    private String nombre;
 
 }
