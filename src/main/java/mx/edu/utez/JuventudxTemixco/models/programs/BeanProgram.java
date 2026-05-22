@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.models.programs;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +22,10 @@ public class BeanProgram {
 
     @ManyToOne
     @JoinColumn(name = "id_seccion")
-    private BeanSection id_Section;
+    private BeanSection Section;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String image;
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    @JsonIgnore
+    private byte[] image;
 }

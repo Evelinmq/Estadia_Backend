@@ -1,9 +1,14 @@
 package mx.edu.utez.JuventudxTemixco.models.Sections;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +24,13 @@ public class BeanSection {
 
     private String description;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    @JsonIgnore
+    private byte[] image;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String image;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "section")
+    private List<BeanProgram> programs;
 
 }
