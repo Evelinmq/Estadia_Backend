@@ -4,10 +4,12 @@ import mx.edu.utez.JuventudxTemixco.Dto.alliesDTO.AliadoDTO;
 import mx.edu.utez.JuventudxTemixco.models.Allies.AllyRepository;
 import mx.edu.utez.JuventudxTemixco.models.Allies.BeanAlly;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+@Service
 public class AlianzaService {
 
     public AllyRepository allyRepository;
@@ -22,11 +24,8 @@ public class AlianzaService {
         BeanAlly bean = new BeanAlly();
 
         bean.setName(datos.getNombre());
-        try {
-            bean.setImage(datos.getImagen().getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        bean.setImage(datos.getImagen());
+
 
         return allyRepository.save(bean);
 
@@ -38,11 +37,8 @@ public class AlianzaService {
                 .orElseThrow(() -> new RuntimeException("Alianza no encontrada"));
 
         existente.setName(datos.getNombre());
-        try {
-            existente.setImage(datos.getImagen().getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        existente.setImage(datos.getImagen());
+
 
         return allyRepository.save(existente);
     }
@@ -61,5 +57,10 @@ public class AlianzaService {
         }
 
         return allyRepository.nombreAlianza(nombre);
+    }
+
+    public List<BeanAlly> listaAlianzas() {
+        return allyRepository.findAll();
+
     }
 }

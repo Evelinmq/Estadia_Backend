@@ -14,21 +14,24 @@ public interface UserRepository extends JpaRepository <BeanUser, Long> {
 
     List<BeanUser> findByRol(UserType rol);
 
-    @Query("SELECT u FROM BeanUser u WHERE " +
+    @Query("SELECT u FROM BeanUser u WHERE (" +
             "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
             "LOWER(u.apellidoP) LIKE LOWER(CONCAT('%', :apellidoP, '%')) OR " +
-            "LOWER(u.apellidoM) LIKE LOWER(CONCAT('%', :apellidoM, '%'))")
+            "LOWER(u.apellidoM) LIKE LOWER(CONCAT('%', :apellidoM, '%'))" +
+            ") AND u.rol = :rol")
     List<BeanUser> BusquedaNombre(
             @Param("nombre") String nombre,
             @Param("apellidoP") String apellidoP,
-            @Param("apellidoM") String apellidoM
+            @Param("apellidoM") String apellidoM,
+            @Param("rol") UserType rol
     );
 
 
 
-    @Query("SELECT u FROM BeanUser u WHERE u.fechaRegistro BETWEEN :fechaInicio AND :fechaFin")
+    @Query("SELECT u FROM BeanUser u WHERE u.fechaRegistro BETWEEN :fechaInicio AND :fechaFin AND u.rol = :rol")
     List<BeanUser> filtrarDinamico(
             @Param("fechaInicio") LocalDate fechaInicio,
-            @Param("fechaFin") LocalDate fechaFin
+            @Param("fechaFin") LocalDate fechaFin,
+            @Param("rol") UserType rol
     );
 }

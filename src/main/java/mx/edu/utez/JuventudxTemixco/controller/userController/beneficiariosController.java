@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AfiliadoDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.BeneficiarioDTO;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
+import mx.edu.utez.JuventudxTemixco.models.users.UserType;
 import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,18 +50,18 @@ public class beneficiariosController {
 
     //Filtros
     @GetMapping("/rangoFecha") //
-    public List<BeanUser> rangoFecha(LocalDate inicio, LocalDate fin) {
-        return userService.buscarConFiltros(inicio, fin);
+    public List<BeanUser> rangoFechaBeneficiario(LocalDate inicio, LocalDate fin) {
+        return userService.buscarConFiltrosBeneficiario(inicio, fin);
     }
 
     @GetMapping("/buscarBeneficiario") //
-    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidos(
+    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidosBeneficairio(
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellidoP", required = false) String apellidoP,
-            @RequestParam(value = "apellidoM", required = false) String apellidoM) {
+            @RequestParam(value = "apellidoM", required = false) String apellidoM){
 
 
-        List<BeanUser> usuarios = userService.buscarPorNombreYApellidos(nombre, apellidoP, apellidoM);
+        List<BeanUser> usuarios = userService.buscarPorNombreYApellidosBeneficiario(nombre, apellidoP, apellidoM);
 
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();

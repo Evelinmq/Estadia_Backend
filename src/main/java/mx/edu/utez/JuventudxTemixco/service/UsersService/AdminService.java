@@ -51,7 +51,7 @@ public class AdminService {
         String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
 
 
-        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM);
+        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.ADMIN);
     }
 
     public ResponseEntity eliminarUsuario(Long id) {

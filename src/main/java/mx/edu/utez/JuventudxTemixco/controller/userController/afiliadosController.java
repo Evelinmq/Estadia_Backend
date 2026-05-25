@@ -49,13 +49,13 @@ public class afiliadosController {
 
     //Filtros
     @GetMapping("/busqueda")
-    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidos(
+    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidosAfiliado(
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellidoP", required = false) String apellidoP,
             @RequestParam(value = "apellidoM", required = false) String apellidoM) {
 
 
-        List<BeanUser> usuarios = userService.buscarPorNombreYApellidos(nombre, apellidoP, apellidoM);
+        List<BeanUser> usuarios = userService.buscarPorNombreYApellidosAfiliado(nombre, apellidoP, apellidoM);
 
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -65,8 +65,8 @@ public class afiliadosController {
     }
 
     @GetMapping("/rangoFechas") //
-    public List<BeanUser> rangoFecha(LocalDate inicio, LocalDate fin) {
-        return userService.buscarConFiltros(inicio, fin);
+    public List<BeanUser> rangoFechaAfiliado(LocalDate inicio, LocalDate fin) {
+        return userService.buscarConFiltrosAfiliado(inicio, fin);
     }
 
 }

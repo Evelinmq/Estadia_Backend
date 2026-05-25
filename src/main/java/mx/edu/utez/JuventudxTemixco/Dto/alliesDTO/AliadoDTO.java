@@ -14,8 +14,6 @@ public class AliadoDTO {
     @NotBlank(message = "El nombre es onligatorio")
     private String nombre;
 
-
-    @NotBlank (message = "La imagen es obligatoria")
-    private MultipartFile imagen;
+    private byte[] imagen;
 
 }

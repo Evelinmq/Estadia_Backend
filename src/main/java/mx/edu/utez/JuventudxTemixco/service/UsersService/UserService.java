@@ -193,23 +193,45 @@ public class UserService {
 
 
     // Filtros
-    public List<BeanUser> buscarConFiltros(LocalDate inicio, LocalDate fin) {
+    public List<BeanUser> buscarConFiltrosBeneficiario(LocalDate inicio, LocalDate fin) {
+
 
         if (inicio == null) inicio = LocalDate.now().minusMonths(1); // Hace un mes
         if (fin == null) fin = LocalDate.now().plusMonths(1);       // En un mes
 
-        return userRepository.filtrarDinamico(inicio, fin);
+        return userRepository.filtrarDinamico(inicio, fin, UserType.BENEFICIARIO);
     }
 
 
-    public List<BeanUser> buscarPorNombreYApellidos(String nombre, String apellidoP, String apellidoM) {
+    public List<BeanUser> buscarPorNombreYApellidosBeneficiario(String nombre, String apellidoP, String apellidoM) {
+
         String buscarNombre = (nombre != null) ? nombre : "";
         String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
         String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
 
 
-        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM);
+        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.BENEFICIARIO);
     }
 
+
+    public List<BeanUser> buscarConFiltrosAfiliado(LocalDate inicio, LocalDate fin) {
+
+
+        if (inicio == null) inicio = LocalDate.now().minusMonths(1); // Hace un mes
+        if (fin == null) fin = LocalDate.now().plusMonths(1);       // En un mes
+
+        return userRepository.filtrarDinamico(inicio, fin, UserType.AFILIADO);
+    }
+
+
+    public List<BeanUser> buscarPorNombreYApellidosAfiliado(String nombre, String apellidoP, String apellidoM) {
+
+        String buscarNombre = (nombre != null) ? nombre : "";
+        String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
+        String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
+
+
+        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.AFILIADO);
+    }
 
 }
