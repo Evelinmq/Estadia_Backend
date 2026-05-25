@@ -22,7 +22,7 @@ public class BeanProgram {
 
     @ManyToOne
     @JoinColumn(name = "id_seccion")
-    private BeanSection Section;
+    private BeanSection section;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")

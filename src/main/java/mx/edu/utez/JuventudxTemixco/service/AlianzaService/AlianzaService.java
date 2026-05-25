@@ -5,6 +5,7 @@ import mx.edu.utez.JuventudxTemixco.models.Allies.AllyRepository;
 import mx.edu.utez.JuventudxTemixco.models.Allies.BeanAlly;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 
+import java.io.IOException;
 import java.util.List;
 
 public class AlianzaService {
@@ -21,7 +22,11 @@ public class AlianzaService {
         BeanAlly bean = new BeanAlly();
 
         bean.setName(datos.getNombre());
-        bean.setImage(datos.getImagen());
+        try {
+            bean.setImage(datos.getImagen().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return allyRepository.save(bean);
 
@@ -33,7 +38,11 @@ public class AlianzaService {
                 .orElseThrow(() -> new RuntimeException("Alianza no encontrada"));
 
         existente.setName(datos.getNombre());
-        existente.setImage(datos.getImagen());
+        try {
+            existente.setImage(datos.getImagen().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return allyRepository.save(existente);
     }

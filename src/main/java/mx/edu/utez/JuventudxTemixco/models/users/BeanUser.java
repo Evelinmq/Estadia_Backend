@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.models.municipalities.BeanMunicipality;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,6 +39,16 @@ public class BeanUser {
     private String correo;
 
     private String contrasena;
+
+
+    //fecha de registro de los usuarios
+    @Column(name = "fecha_registro", nullable = false, updatable = false)
+    private LocalDate fechaRegistro;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaRegistro = LocalDate.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "id_municipio")

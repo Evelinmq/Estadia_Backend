@@ -9,6 +9,8 @@ import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 
 @Service
 public class UserService {
@@ -38,7 +40,11 @@ public class UserService {
         user.setTelefono(datos.getTelefono());
         user.setMunicipio(municipio);
         user.setCorreo(datos.getCorreo());
-        user.setFoto(datos.getFoto());
+        try {
+            user.setFoto(datos.getFoto().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return userRepository.save(user);
 
@@ -55,10 +61,70 @@ public class UserService {
         user.setGenero(datos.getGenero());
         user.setEdad(datos.getEdad());
         user.setTelefono(datos.getTelefono());
-        user.setFoto(datos.getFoto());
+        try {
+            user.setFoto(datos.getFoto().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return userRepository.save(user);
 
     }
+
+
+
+    public BeanUser editarBeneficiario(BeneficiarioDTO datos, Long id) {
+
+        BeanUser existente = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        BeanMunicipality municipio = municipalityRepository.getReferenceById(datos.getId_Municipio());
+
+        if(userRepository.existsByCorreo(datos.getCorreo())){
+            throw new IllegalArgumentException("El correo ya se encuentra registrado, intenta con otro correo");
+        }
+
+        existente.setNombre(datos.getNombre());
+        existente.setApellidoP(datos.getApellidoP());
+        existente.setApellidoM(datos.getApellidoM());
+        existente.setGenero(datos.getGenero());
+        existente.setMunicipio(municipio);
+        existente.setColonia(datos.getColonia());
+        existente.setCorreo(datos.getCorreo());
+        existente.setTelefono(datos.getTelefono());
+        try {
+            existente.setFoto(datos.getFoto().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return userRepository.save(existente);
+
+
+    }
+
+    public BeanUser editarAfiliado(AfiliadoDTO datos, Long id) {
+
+        BeanUser existente = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        datos.setNombre(existente.getNombre());
+        datos.setApellidoP(existente.getApellidoP());
+        datos.setApellidoM(existente.getApellidoM());
+        datos.setEdad(existente.getEdad());
+        datos.setTelefono(existente.getTelefono());
+        datos.setGenero(existente.getGenero());
+        try {
+            existente.setFoto(datos.getFoto().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return userRepository.save(existente);
+
+
+    }
+
 
 }
