@@ -2,6 +2,7 @@ package mx.edu.utez.JuventudxTemixco.Dto.usersDto;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,17 +24,17 @@ public class BeneficiarioDTO {
     @NotBlank (message = "El Apellido Materno es obligatorio")
     private String apellidoM;
 
-    @NotBlank (message = "El genero es obligatorio")
+    @NotNull (message = "El genero es obligatorio")
     private Gender genero;
 
-    @NotBlank (message = "La edad es obligatoria")
+    @NotNull (message = "La edad es obligatoria")
     private Integer edad;
 
     @NotBlank (message = "El numero de telefono es obligatorio")
     @Size (min = 10, max = 10, message = "El numero solo debe tener 10 digitos ")
     private String telefono;
 
-    @NotBlank (message = "El Municipio es obligatorio")
+    @NotNull (message = "El Municipio es obligatorio")
     private Long id_Municipio;
 
     @NotBlank (message = "La colonia es obligatoria")
@@ -42,8 +43,7 @@ public class BeneficiarioDTO {
     @NotBlank (message = "El correo es obligatorio")
     private String correo;
 
-    @NotBlank (message = "La foto es obligatoria")
-    private MultipartFile foto;
+    private byte[] foto;
 
 
 }

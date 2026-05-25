@@ -1,0 +1,72 @@
+package mx.edu.utez.JuventudxTemixco.controller.userController;
+
+
+import jakarta.validation.Valid;
+import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AfiliadoDTO;
+import mx.edu.utez.JuventudxTemixco.Dto.usersDto.BeneficiarioDTO;
+import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
+import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/afiliados")
+@CrossOrigin
+public class afiliadosController {
+
+
+    private UserService userService;
+
+    public afiliadosController(UserService userService) {
+        this.userService = userService;
+    }
+
+
+    @GetMapping
+    public List<AfiliadoDTO> listaAfiliados() {
+        return userService.listarAfiliados();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminaAfiliado(@PathVariable Long id) {
+        return userService.eliminarUsuario(id);
+    }
+
+    @PostMapping
+    public BeanUser agregaAfiliado(@Valid @RequestBody AfiliadoDTO user) {
+        return userService.createUserAfiliado(user);
+    }
+
+    @PutMapping("/{id}")
+    public BeanUser actualizaAfiliado(@Valid @RequestBody AfiliadoDTO user, @PathVariable Long id) {
+        return userService.editarAfiliado(user, id);
+    }
+
+
+
+    //Filtros
+    @GetMapping("/busqueda")
+    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidos(
+            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "apellidoP", required = false) String apellidoP,
+            @RequestParam(value = "apellidoM", required = false) String apellidoM) {
+
+
+        List<BeanUser> usuarios = userService.buscarPorNombreYApellidos(nombre, apellidoP, apellidoM);
+
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/rangoFechas") //
+    public List<BeanUser> rangoFecha(LocalDate inicio, LocalDate fin) {
+        return userService.buscarConFiltros(inicio, fin);
+    }
+
+}

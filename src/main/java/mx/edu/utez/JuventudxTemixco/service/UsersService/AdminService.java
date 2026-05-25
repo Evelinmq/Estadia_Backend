@@ -45,12 +45,13 @@ public class AdminService {
 
     }
 
-    public List<BeanUser> buscarPorNombre(String nombre) {
-        if (nombre == null || nombre.isEmpty()) {
-            return userRepository.findAll();
-        }
+    public List<BeanUser> buscarPorNombreYApellidos(String nombre, String apellidoP, String apellidoM) {
+        String buscarNombre = (nombre != null) ? nombre : "";
+        String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
+        String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
 
-        return userRepository.NombreUsuario(nombre);
+
+        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM);
     }
 
     public ResponseEntity eliminarUsuario(Long id) {
@@ -79,19 +80,23 @@ public class AdminService {
     }
 
 
+    public List<AdministradorDTO> listarAdministradores() {
+        List<BeanUser> administradorEntidad = userRepository.findByRol(UserType.ADMIN);
+
+        return administradorEntidad.stream()
+                .map(user -> {
+                    AdministradorDTO dto = new AdministradorDTO();
+
+                    dto.setNombre(user.getNombre());
+                    dto.setApellidoP(user.getApellidoP());
+                    dto.setApellidoM(user.getApellidoM());
+                    dto.setCorreo(user.getCorreo());
+                    dto.setContrasena(user.getContrasena());
 
 
-    public List<BeanUser> buscarConFiltros(LocalDate inicio, LocalDate fin) {
-
-        if (inicio == null) inicio = LocalDate.now().minusMonths(1); // Hace un mes
-        if (fin == null) fin = LocalDate.now().plusMonths(1);       // En un mes
-
-        return userRepository.filtrarDinamico(inicio, fin);
-    }
-
-
-    public List<BeanUser> listarAdministradores(){
-        return userRepository.findByRol(UserType.ADMIN);
+                    return dto;
+                })
+                .toList();
     }
 
 

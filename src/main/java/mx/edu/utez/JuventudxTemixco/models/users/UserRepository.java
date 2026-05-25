@@ -14,8 +14,16 @@ public interface UserRepository extends JpaRepository <BeanUser, Long> {
 
     List<BeanUser> findByRol(UserType rol);
 
-    @Query("SELECT u FROM BeanUser u WHERE u.nombre = :nombre")
-    List<BeanUser> NombreUsuario(@Param("nombre") String nombre);
+    @Query("SELECT u FROM BeanUser u WHERE " +
+            "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
+            "LOWER(u.apellidoP) LIKE LOWER(CONCAT('%', :apellidoP, '%')) OR " +
+            "LOWER(u.apellidoM) LIKE LOWER(CONCAT('%', :apellidoM, '%'))")
+    List<BeanUser> BusquedaNombre(
+            @Param("nombre") String nombre,
+            @Param("apellidoP") String apellidoP,
+            @Param("apellidoM") String apellidoM
+    );
+
 
 
     @Query("SELECT u FROM BeanUser u WHERE u.fechaRegistro BETWEEN :fechaInicio AND :fechaFin")

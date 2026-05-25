@@ -2,6 +2,7 @@ package mx.edu.utez.JuventudxTemixco.Dto.usersDto;
 
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +24,12 @@ public class AfiliadoDTO {
     @NotBlank (message = "El apellido materno es obligatorio")
     private String apellidoM;
 
-    @NotBlank (message = "La foto es obligatoria")
-    private MultipartFile foto;
+    private byte[] foto;
 
-    @NotBlank (message = "El genero es obligatorio")
+    @NotNull (message = "El genero es obligatorio")
     private Gender genero;
 
-    @NotBlank (message = "La edad es obligatorio")
+    @NotNull(message = "La edad es obligatorio")
     private Integer edad;
 
     @NotBlank (message = "El telefono es obligatorio")

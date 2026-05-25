@@ -15,38 +15,49 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin
-public class usersController {
+public class AdminController {
 
     private AdminService adminService;
-    private UserService userService;
 
-    public usersController(AdminService adminService, UserService userService) {
+
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
-        this.userService = userService;
+
     }
 
 
     @GetMapping
-    public List<BeanUser> Administradores() {
+    public List<AdministradorDTO> Administradores() { //
 
         return adminService.listarAdministradores();
     }
 
-    @PostMapping
+    @PostMapping//
     public BeanUser createUser(@Valid @RequestBody AdministradorDTO datos) {
         return adminService.createUserAdmin(datos);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") //
     public BeanUser updateUser(@Valid @RequestBody AdministradorDTO datos, @PathVariable long id) {
         return adminService.editarAdmin(datos, id);
     }
 
-    @GetMapping("/buscar")
-    public ResponseEntity<List<BeanUser>> buscarPorNombre(
-            @RequestParam(value = "nombre", required = false) String nombre) {
 
-        List<BeanUser> usuarios = adminService.buscarPorNombre(nombre);
+    @DeleteMapping("/{id}") //
+    public ResponseEntity deleteUser(@PathVariable long id) {
+        return adminService.eliminarUsuario(id);
+    }
+
+
+    // filtro de busqueda
+    @GetMapping("/buscar") //
+    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidos(
+            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "apellidoP", required = false) String apellidoP,
+            @RequestParam(value = "apellidoM", required = false) String apellidoM) {
+
+
+        List<BeanUser> usuarios = adminService.buscarPorNombreYApellidos(nombre, apellidoP, apellidoM);
 
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -55,16 +66,8 @@ public class usersController {
         return ResponseEntity.ok(usuarios);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable long id) {
-        return adminService.eliminarUsuario(id);
-    }
 
 
-    @GetMapping("/rangoFecha")
-    public List<BeanUser> rangoFecha(LocalDate inicio, LocalDate fin) {
-        return adminService.buscarConFiltros(inicio, fin);
-    }
 
 
 }
