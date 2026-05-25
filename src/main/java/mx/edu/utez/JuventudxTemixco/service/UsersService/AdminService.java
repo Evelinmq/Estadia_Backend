@@ -7,6 +7,7 @@ import mx.edu.utez.JuventudxTemixco.models.municipalities.BeanMunicipality;
 import mx.edu.utez.JuventudxTemixco.models.municipalities.MunicipalityRepository;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
+import mx.edu.utez.JuventudxTemixco.models.users.UserType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class AdminService {
         user.setApellidoM(datos.getApellidoP());
         user.setCorreo(datos.getCorreo());
         user.setContrasena(datos.getContrasena());
+        user.setRol(UserType.ADMIN);
 
         return userRepository.save(user);
 
@@ -89,7 +91,7 @@ public class AdminService {
 
 
     public List<BeanUser> listarAdministradores(){
-        return userRepository.findAll();
+        return userRepository.findByRol(UserType.ADMIN);
     }
 
 

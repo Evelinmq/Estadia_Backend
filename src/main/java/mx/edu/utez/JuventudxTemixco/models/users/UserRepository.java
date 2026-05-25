@@ -12,6 +12,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository <BeanUser, Long> {
     boolean existsByCorreo(String correo);
 
+    List<BeanUser> findByRol(UserType rol);
+
     @Query("SELECT u FROM BeanUser u WHERE u.nombre = :nombre")
     List<BeanUser> NombreUsuario(@Param("nombre") String nombre);
 
