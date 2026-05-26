@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.models.programs;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class BeanProgram {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "id_seccion")
     private BeanSection section;

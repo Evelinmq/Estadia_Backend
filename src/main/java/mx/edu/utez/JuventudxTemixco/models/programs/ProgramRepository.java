@@ -11,4 +11,6 @@ public interface ProgramRepository extends JpaRepository<BeanProgram, Long> {
     List<BeanProgram> findBySectionId(Long sectionId);
 
     Long id(Long id);
+
+    List<BeanProgram> findBySectionName(String sectionName);
 }

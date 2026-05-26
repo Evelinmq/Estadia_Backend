@@ -1,4 +1,4 @@
-package mx.edu.utez.JuventudxTemixco.controller.Goal.dto;
+package mx.edu.utez.JuventudxTemixco.Dto.Goal;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

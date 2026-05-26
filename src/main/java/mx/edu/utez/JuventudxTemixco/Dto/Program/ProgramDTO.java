@@ -1,4 +1,4 @@
-package mx.edu.utez.JuventudxTemixco.controller.Program.dto;
+package mx.edu.utez.JuventudxTemixco.Dto.Program;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

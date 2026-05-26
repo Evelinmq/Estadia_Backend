@@ -1,10 +1,12 @@
 package mx.edu.utez.JuventudxTemixco.service.Goals;
 
-import mx.edu.utez.JuventudxTemixco.controller.Goal.dto.UpdateDescriptionDTO;
+import mx.edu.utez.JuventudxTemixco.Dto.Goal.UpdateDescriptionDTO;
 import mx.edu.utez.JuventudxTemixco.models.Goals.BeanGoal;
 import mx.edu.utez.JuventudxTemixco.models.Goals.GoalRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class GoalService {
     }
 
     @Transactional
-    public BeanGoal updateDescription(Long id, UpdateDescriptionDTO dto){
+    public BeanGoal updateDescription(@PathVariable Long id, @RequestBody UpdateDescriptionDTO dto){
         BeanGoal goal = goalRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Goal not found"));
 

@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SectionService {
@@ -18,17 +19,54 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    public BeanSection save(MultipartFile file, String descripcion) throws IOException {
+    @Transactional
+    public BeanSection save(MultipartFile file, String name, String descripcion) throws IOException {
         BeanSection beanSection = new BeanSection();
 
         beanSection.setImage(file.getBytes());
+        beanSection.setName(name);
         beanSection.setDescription(descripcion);
 
         return sectionRepository.save(beanSection);
     }
 
+    @Transactional
+    public BeanSection update(Long id, MultipartFile file, String descripcion, String name) throws IOException {
+        BeanSection beanSection = sectionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Section not found with ID: " + id));
+
+        if (file != null && !file.isEmpty()) {
+            beanSection.setImage(file.getBytes());
+        }
+        beanSection.setDescription(descripcion);
+
+        if (name != null) {
+            beanSection.setName(name);
+        }
+
+        return sectionRepository.save(beanSection);
+    }
+
     @Transactional(readOnly = true)
-    public List<BeanSection> list(){
+    public List<BeanSection> list() {
         return sectionRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public List<BeanSection> findByName(String name) {
+        if (name == null || name.isEmpty()) {
+            return sectionRepository.findAll();
+        }
+
+        return sectionRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!sectionRepository.existsById(id)) {
+            throw new RuntimeException("It is not possible to delete. Section not found.");
+        }
+        sectionRepository.deleteById(id);
+    }
+
 }

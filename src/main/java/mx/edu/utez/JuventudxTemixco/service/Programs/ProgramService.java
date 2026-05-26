@@ -1,6 +1,5 @@
 package mx.edu.utez.JuventudxTemixco.service.Programs;
 
-import mx.edu.utez.JuventudxTemixco.controller.Program.dto.ProgramDTO;
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
 import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
@@ -37,6 +36,24 @@ public class ProgramService {
         return programRepository.save(program);
     }
 
+    @Transactional
+    public BeanProgram update(Long id, Long section_id, MultipartFile file) throws IOException {
+        BeanProgram beanProgram = programRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Program not found with ID: " + id));
+
+        if (file != null && !file.isEmpty()) {
+            beanProgram.setImage(file.getBytes());
+        }
+
+        if (section_id != null ) {
+            BeanSection beanSection = sectionRepository.findById(section_id)
+                    .orElseThrow(() -> new RuntimeException("Section not found with ID: " + section_id));
+            beanProgram.setSection(beanSection);
+        }
+
+        return programRepository.save(beanProgram);
+    }
+
     @Transactional(readOnly = true)
     public List<BeanProgram> list() {
         return programRepository.findAll();
@@ -53,5 +70,14 @@ public class ProgramService {
             throw new RuntimeException("It is not possible to delete. Program not found.");
         }
         programRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BeanProgram> searchBySectionName(String name) {
+        if (name == null || name.isEmpty()) {
+            return programRepository.findAll();
+        }
+
+        return programRepository.findBySectionName(name);
     }
 }
