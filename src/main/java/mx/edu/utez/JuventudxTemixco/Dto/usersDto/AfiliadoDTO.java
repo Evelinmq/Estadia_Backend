@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class AfiliadoDTO {
 
+    private Long id;
+
     private String nombre;
 
     private String apellidoP;

@@ -159,7 +159,7 @@ public class UserService {
         BeanUser existente = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-
+        existente.setId(existente.getId());
         existente.setNombre(datos.getNombre());
         existente.setApellidoP(datos.getApellidoP());
         existente.setApellidoM(datos.getApellidoM());
@@ -191,6 +191,7 @@ public class UserService {
                 .map(user -> {
                     AfiliadoDTO dto = new AfiliadoDTO();
 
+                    dto.setId(user.getId());
                     dto.setNombre(user.getNombre());
                     dto.setApellidoP(user.getApellidoP());
                     dto.setApellidoM(user.getApellidoM());
