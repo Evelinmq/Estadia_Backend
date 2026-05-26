@@ -10,19 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdministradorDTO {
 
-    @NotBlank (message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank (message = "El apellido paterno es obligatorio")
     private String apellidoP;
 
-    @NotBlank (message = "El apellido materno es obligatorio")
     private String apellidoM;
 
-    @NotBlank (message = "El correo es obligatorio")
     private String correo;
 
-    @NotBlank (message = "La contraseña es obligatoria")
     private String contrasena;
 
 

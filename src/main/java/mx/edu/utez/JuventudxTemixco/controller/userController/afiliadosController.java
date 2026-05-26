@@ -9,12 +9,13 @@ import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/afiliados")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class afiliadosController {
 
 
@@ -36,12 +37,12 @@ public class afiliadosController {
     }
 
     @PostMapping
-    public BeanUser agregaAfiliado(@Valid @RequestBody AfiliadoDTO user) {
+    public BeanUser agregaAfiliado(@Valid @RequestBody AfiliadoDTO user) throws IOException {
         return userService.createUserAfiliado(user);
     }
 
     @PutMapping("/{id}")
-    public BeanUser actualizaAfiliado(@Valid @RequestBody AfiliadoDTO user, @PathVariable Long id) {
+    public BeanUser actualizaAfiliado(@Valid @RequestBody AfiliadoDTO user, @PathVariable Long id) throws IOException {
         return userService.editarAfiliado(user, id);
     }
 

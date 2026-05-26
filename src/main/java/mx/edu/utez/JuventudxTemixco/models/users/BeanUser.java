@@ -56,6 +56,7 @@ public class BeanUser {
 
     private String colonia;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Lob
+    @Column(name = "foto", columnDefinition = "LONGBLOB")
     private byte[] foto;
 }

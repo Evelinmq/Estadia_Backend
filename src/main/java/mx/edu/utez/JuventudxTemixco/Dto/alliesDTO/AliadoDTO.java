@@ -14,6 +14,6 @@ public class AliadoDTO {
     @NotBlank(message = "El nombre es onligatorio")
     private String nombre;
 
-    private byte[] imagen;
+    private String imagen;
 
 }

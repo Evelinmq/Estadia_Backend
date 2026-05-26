@@ -48,8 +48,14 @@ public class UserService {
         user.setColonia(datos.getColonia());
         user.setCorreo(datos.getCorreo());
         user.setRol(UserType.BENEFICIARIO);
-        if (datos.getFoto() != null) {
-            user.setFoto(datos.getFoto());
+        if (datos.getFoto() != null && !datos.getFoto().isEmpty()) {
+            try {
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getFoto().trim());
+                user.setFoto(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                user.setFoto(null);
+            }
         }
 
 
@@ -73,10 +79,15 @@ public class UserService {
         existente.setColonia(datos.getColonia());
         existente.setCorreo(datos.getCorreo());
         existente.setTelefono(datos.getTelefono());
-        if (existente.getFoto() != null) {
-            existente.setFoto(datos.getFoto());
+        if (datos.getFoto() != null && !datos.getFoto().isEmpty()) {
+            try {
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getFoto().trim());
+                existente.setFoto(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                existente.setFoto(null);
+            }
         }
-
 
         return userRepository.save(existente);
 
@@ -100,7 +111,8 @@ public class UserService {
                     dto.setColonia(user.getColonia());
                     dto.setCorreo(user.getCorreo());
                     if (user.getFoto() != null) {
-                        dto.setFoto(user.getFoto());
+                        String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
+                        dto.setFoto(base64String);
                     }
 
 
@@ -112,7 +124,7 @@ public class UserService {
 
 
     // Afiliado
-    public BeanUser createUserAfiliado(AfiliadoDTO datos){
+    public BeanUser createUserAfiliado(AfiliadoDTO datos) throws IOException {
 
         BeanUser user = new BeanUser();
 
@@ -123,10 +135,17 @@ public class UserService {
         user.setEdad(datos.getEdad());
         user.setTelefono(datos.getTelefono());
         user.setRol(UserType.AFILIADO);
-        if (datos.getFoto() != null) {
-            user.setFoto(datos.getFoto());
-        }
+        user.setFechaRegistro(LocalDate.now());
 
+        if (datos.getFoto() != null && !datos.getFoto().isEmpty()) {
+            try {
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getFoto().trim());
+                user.setFoto(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                user.setFoto(null);
+            }
+        }
         return userRepository.save(user);
 
     }
@@ -135,7 +154,7 @@ public class UserService {
 
 
 
-    public BeanUser editarAfiliado(AfiliadoDTO datos, Long id) {
+    public BeanUser editarAfiliado(AfiliadoDTO datos, Long id) throws IOException {
 
         BeanUser existente = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -148,8 +167,17 @@ public class UserService {
         existente.setTelefono(datos.getTelefono());
         existente.setGenero(datos.getGenero());
 
-        if (datos.getFoto() != null) {
-            existente.setFoto(datos.getFoto());
+
+        if (datos.getFoto() != null && !datos.getFoto().isEmpty()) {
+            try {
+
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getFoto().trim());
+                existente.setFoto(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                existente.setFoto(null);
+            }
         }
 
         return userRepository.save(existente);
@@ -170,7 +198,8 @@ public class UserService {
                     dto.setEdad(user.getEdad());
                     dto.setTelefono(user.getTelefono());
                     if (user.getFoto() != null) {
-                        dto.setFoto(user.getFoto());
+                        String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
+                        dto.setFoto(base64String);
                     }
 
 

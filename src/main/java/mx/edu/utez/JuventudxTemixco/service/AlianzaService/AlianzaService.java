@@ -24,7 +24,15 @@ public class AlianzaService {
         BeanAlly bean = new BeanAlly();
 
         bean.setName(datos.getNombre());
-        bean.setImage(datos.getImagen());
+        if (datos.getImagen() != null && !datos.getImagen().isEmpty()) {
+            try {
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getImagen().trim());
+                bean.setImage(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                bean.setImage(null);
+            }
+        }
 
 
         return allyRepository.save(bean);
@@ -37,7 +45,15 @@ public class AlianzaService {
                 .orElseThrow(() -> new RuntimeException("Alianza no encontrada"));
 
         existente.setName(datos.getNombre());
-        existente.setImage(datos.getImagen());
+        if (datos.getImagen() != null && !datos.getImagen().isEmpty()) {
+            try {
+                byte[] imagenEnBytes = java.util.Base64.getMimeDecoder().decode(datos.getImagen().trim());
+                existente.setImage(imagenEnBytes);
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error al decodificar la foto del afiliado: " + e.getMessage());
+                existente.setImage(null);
+            }
+        }
 
 
         return allyRepository.save(existente);
