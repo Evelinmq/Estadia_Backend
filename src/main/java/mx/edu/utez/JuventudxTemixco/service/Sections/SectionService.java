@@ -53,6 +53,11 @@ public class SectionService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<BeanSection> findById(Long id) {
+        return sectionRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<BeanSection> findByName(String name) {
         if (name == null || name.isEmpty()) {
             return sectionRepository.findAll();
@@ -64,7 +69,7 @@ public class SectionService {
     @Transactional
     public void delete(Long id) {
         if (!sectionRepository.existsById(id)) {
-            throw new RuntimeException("It is not possible to delete. Section not found.");
+            throw new RuntimeException("No es posible eliminar. Sección no encontrada");
         }
         sectionRepository.deleteById(id);
     }

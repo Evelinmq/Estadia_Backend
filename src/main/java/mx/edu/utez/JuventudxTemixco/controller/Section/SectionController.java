@@ -1,5 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.controller.Section;
 
+import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
+import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
 import mx.edu.utez.JuventudxTemixco.service.Sections.SectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,13 +13,15 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/section")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class SectionController {
 
     private final SectionService service;
+    private final SectionRepository sectionRepository;
 
-    public SectionController(SectionService service) {
+    public SectionController(SectionService service, SectionRepository sectionRepository) {
         this.service = service;
+        this.sectionRepository = sectionRepository;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -32,7 +36,7 @@ public class SectionController {
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(
             @PathVariable Long id,
-            @RequestParam("archivo") MultipartFile archivo,
+            @RequestParam(value = "archivo", required = false) MultipartFile archivo,
             @RequestParam("description") String description,
             @RequestParam(value = "name") String name
     ) throws IOException {
@@ -42,6 +46,20 @@ public class SectionController {
     @GetMapping
     public ResponseEntity<?> list(){
         return new ResponseEntity<>(service.list(), HttpStatus.OK);
+    }
+
+    @GetMapping("/imagen/{id}")
+    public ResponseEntity<byte[]> getImagen(@PathVariable Long id) {
+        BeanSection section = service.findById(id)
+                .orElseThrow(() -> new RuntimeException("Section not found"));
+
+        if (section.getImage() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(section.getImage());
     }
 
     @GetMapping("/byName")
