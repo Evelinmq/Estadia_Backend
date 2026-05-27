@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdministradorDTO {
 
+    private Long id;
+
     private String nombre;
 
     private String apellidoP;

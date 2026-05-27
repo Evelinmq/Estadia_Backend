@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class BeneficiarioDTO {
 
+    private Long id;
 
     private String nombre;
 

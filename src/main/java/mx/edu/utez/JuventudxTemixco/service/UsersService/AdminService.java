@@ -67,6 +67,7 @@ public class AdminService {
         BeanUser existente = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        existente.setId(datos.getId());
         existente.setNombre(datos.getNombre());
         existente.setApellidoP(datos.getApellidoP());
         existente.setApellidoM(datos.getApellidoM());
@@ -87,6 +88,7 @@ public class AdminService {
                 .map(user -> {
                     AdministradorDTO dto = new AdministradorDTO();
 
+                    dto.setId(user.getId());
                     dto.setNombre(user.getNombre());
                     dto.setApellidoP(user.getApellidoP());
                     dto.setApellidoM(user.getApellidoM());

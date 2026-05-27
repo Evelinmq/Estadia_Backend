@@ -3,7 +3,9 @@ package mx.edu.utez.JuventudxTemixco.controller.userController;
 import jakarta.validation.Valid;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AfiliadoDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.BeneficiarioDTO;
+import mx.edu.utez.JuventudxTemixco.models.municipalities.BeanMunicipality;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
+import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
 import mx.edu.utez.JuventudxTemixco.models.users.UserType;
 import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,18 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class beneficiariosController {
 
+    private UserRepository userRepository;
     private UserService userService;
 
-    public beneficiariosController(UserService userService) {
+    public beneficiariosController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
+    @GetMapping("/Municipios")
+    public List<BeanMunicipality> listarMunicipios(){
+        return userService.listarMunicipios();
+    }
 
 
     @GetMapping
@@ -39,6 +47,12 @@ public class beneficiariosController {
     @PostMapping
     public BeanUser agregaBeneficiario(@Valid @RequestBody BeneficiarioDTO user) {
         return userService.createUserBeneficiario(user);
+    }
+
+    @GetMapping("/verificarCorreo")
+    public ResponseEntity<Boolean> verificarCorreo(@RequestParam String email) {
+        boolean existe = userRepository.existsByCorreo(email);
+        return ResponseEntity.ok(existe);
     }
 
     @PutMapping("/{id}")

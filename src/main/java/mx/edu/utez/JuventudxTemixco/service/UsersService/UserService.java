@@ -101,6 +101,7 @@ public class UserService {
                 .map(user -> {
                     BeneficiarioDTO dto = new BeneficiarioDTO();
 
+                    dto.setId(user.getId());
                     dto.setNombre(user.getNombre());
                     dto.setApellidoP(user.getApellidoP());
                     dto.setApellidoM(user.getApellidoM());
@@ -119,6 +120,11 @@ public class UserService {
                     return dto;
                 })
                 .toList();
+    }
+
+    public List<BeanMunicipality> listarMunicipios() {
+        return municipalityRepository.findAll();
+
     }
 
 

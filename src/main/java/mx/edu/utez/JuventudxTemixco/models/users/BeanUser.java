@@ -1,5 +1,6 @@
 package mx.edu.utez.JuventudxTemixco.models.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,6 +53,7 @@ public class BeanUser {
 
     @ManyToOne
     @JoinColumn(name = "id_municipio")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private BeanMunicipality municipio;
 
     private String colonia;
