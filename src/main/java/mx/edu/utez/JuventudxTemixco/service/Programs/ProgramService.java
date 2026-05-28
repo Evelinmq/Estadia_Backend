@@ -1,5 +1,6 @@
 package mx.edu.utez.JuventudxTemixco.service.Programs;
 
+import mx.edu.utez.JuventudxTemixco.Dto.Program.ProgramDTO;
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
 import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProgramService {
@@ -20,6 +23,16 @@ public class ProgramService {
     public ProgramService(ProgramRepository programRepository, SectionRepository sectionRepository) {
         this.programRepository = programRepository;
         this.sectionRepository = sectionRepository;
+    }
+
+    private ProgramDTO toDTO(BeanProgram program) {
+        ProgramDTO dto = new ProgramDTO();
+        dto.setId(program.getId());
+        if (program.getSection() != null) {
+            dto.setSectionId(program.getSection().getId());
+            dto.setSectionName(program.getSection().getName());
+        }
+        return dto;
     }
 
     @Transactional
@@ -55,8 +68,16 @@ public class ProgramService {
     }
 
     @Transactional(readOnly = true)
-    public List<BeanProgram> list() {
-        return programRepository.findAll();
+    public List<ProgramDTO> list() {
+        return programRepository.findAll().
+                stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<BeanProgram> findById(Long id) {
+        return programRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
@@ -73,11 +94,18 @@ public class ProgramService {
     }
 
     @Transactional(readOnly = true)
-    public List<BeanProgram> searchBySectionName(String name) {
+    public List<ProgramDTO> searchBySectionName(String name) {
         if (name == null || name.isEmpty()) {
-            return programRepository.findAll();
+            return programRepository
+                    .findAll()
+                    .stream()
+                    .map(this::toDTO)
+                    .collect(Collectors.toList());
         }
 
-        return programRepository.findBySectionName(name);
+        return programRepository.findBySectionNameContainingIgnoreCase(name)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 }

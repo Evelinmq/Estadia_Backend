@@ -13,4 +13,6 @@ public interface ProgramRepository extends JpaRepository<BeanProgram, Long> {
     Long id(Long id);
 
     List<BeanProgram> findBySectionName(String sectionName);
+    
+    List<BeanProgram> findBySectionNameContainingIgnoreCase(String name);
 }

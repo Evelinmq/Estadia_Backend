@@ -9,8 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProgramDTO {
-
+    private Long id;
     private Long sectionId;
-    private MultipartFile image;
-
+    private String sectionName;
 }

@@ -1,7 +1,9 @@
 package mx.edu.utez.JuventudxTemixco.controller.Program;
 
+import mx.edu.utez.JuventudxTemixco.Dto.Program.ProgramDTO;
 import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
 import mx.edu.utez.JuventudxTemixco.service.Programs.ProgramService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/program")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class ProgramController {
 
     private final ProgramService programService;
@@ -39,8 +42,23 @@ public class ProgramController {
     }
 
     @GetMapping
-    public ResponseEntity<?> list() {
+    public ResponseEntity<List<ProgramDTO>> list() {
         return new ResponseEntity<>(programService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping("/file/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable Long id) {
+        BeanProgram program = programService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Program nor found"));
+
+        if (program.getImage() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .contentType(MediaType.IMAGE_PNG)
+                .body(program.getImage());
     }
 
     @GetMapping("/bySection/{idSection}")
@@ -49,8 +67,8 @@ public class ProgramController {
     }
 
     @GetMapping("/bySectionName")
-    public ResponseEntity<?> listBySectionName(
-            @RequestParam(value = "sectionName", required = true) String sectionName
+    public ResponseEntity<List<ProgramDTO>> listBySectionName(
+            @RequestParam(value = "sectionName") String sectionName
     ) {
         return new ResponseEntity<>(programService.searchBySectionName(sectionName), HttpStatus.OK);
     }
