@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class AliadoDTO {
 
-    @NotBlank(message = "El nombre es onligatorio")
+
+    private Long id;
+
     private String nombre;
 
     private String imagen;

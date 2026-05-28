@@ -19,7 +19,7 @@ public class BeanAlly {
 
     private String name;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
 }
