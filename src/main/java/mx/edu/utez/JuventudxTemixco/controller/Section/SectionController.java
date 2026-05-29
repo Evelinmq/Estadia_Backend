@@ -2,6 +2,8 @@ package mx.edu.utez.JuventudxTemixco.controller.Section;
 
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
+import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
+import mx.edu.utez.JuventudxTemixco.models.programs.ProgramRepository;
 import mx.edu.utez.JuventudxTemixco.service.Sections.SectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,10 +20,12 @@ public class SectionController {
 
     private final SectionService service;
     private final SectionRepository sectionRepository;
+    private ProgramRepository programRepository;
 
-    public SectionController(SectionService service, SectionRepository sectionRepository) {
+    public SectionController(SectionService service, SectionRepository sectionRepository, ProgramRepository programRepository) {
         this.service = service;
         this.sectionRepository = sectionRepository;
+        this.programRepository = programRepository;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -71,6 +75,27 @@ public class SectionController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/programs")
+    public ResponseEntity<?>getProgramasPorSeccion(@PathVariable Long id) {
+        BeanSection section = service.findById(id)
+                .orElseThrow(() -> new RuntimeException("Section not found"));
+        return ResponseEntity.ok(section.getPrograms());
+    }
+
+    @GetMapping("/program/image/{id}")
+    public ResponseEntity<byte[]>getImagenPrograma(@PathVariable Long id) {
+        BeanProgram program = programRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Images not found"));
+
+        if (program.getImage() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(program.getImage());
     }
 
 }
