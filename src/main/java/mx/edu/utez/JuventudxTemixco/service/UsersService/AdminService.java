@@ -36,7 +36,7 @@ public class AdminService {
 
         user.setNombre(datos.getNombre());
         user.setApellidoP(datos.getApellidoP());
-        user.setApellidoM(datos.getApellidoP());
+        user.setApellidoM(datos.getApellidoM());
         user.setCorreo(datos.getCorreo());
         user.setContrasena(datos.getContrasena());
         user.setRol(UserType.ADMIN);
@@ -45,13 +45,32 @@ public class AdminService {
 
     }
 
-    public List<BeanUser> buscarPorNombreYApellidos(String nombre, String apellidoP, String apellidoM) {
-        String buscarNombre = (nombre != null) ? nombre : "";
-        String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
-        String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
+    public List<AdministradorDTO> buscarPorNombreYApellidos (String nombre, String apellidoP, String apellidoM) {
 
+        String buscarNombre = (nombre != null && !nombre.isBlank()) ? nombre : null;
+        String buscarApellidoP = (apellidoP != null && !apellidoP.isBlank()) ? apellidoP : null;
+        String buscarApellidoM = (apellidoM != null && !apellidoM.isBlank()) ? apellidoM : null;
 
-        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.ADMIN);
+        List<BeanUser> usuarios = userRepository.BusquedaNombre(
+                buscarNombre,
+                buscarApellidoP,
+                buscarApellidoM,
+                UserType.ADMIN
+        );
+
+        return usuarios.stream()
+                .map(user -> {
+                    AdministradorDTO dto = new AdministradorDTO();
+
+                    dto.setId(user.getId());
+                    dto.setNombre(user.getNombre());
+                    dto.setApellidoP(user.getApellidoP());
+                    dto.setApellidoM(user.getApellidoM());
+                    dto.setCorreo(user.getCorreo());
+
+                    return dto;
+                })
+                .toList();
     }
 
     public ResponseEntity eliminarUsuario(Long id) {

@@ -49,18 +49,18 @@ public class afiliadosController {
 
 
     //Filtros
-    @GetMapping("/busqueda")
-    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidosAfiliado(
+    @GetMapping("/buscar")
+    public ResponseEntity<List<AfiliadoDTO>> buscarPorNombreYApellidos(
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellidoP", required = false) String apellidoP,
             @RequestParam(value = "apellidoM", required = false) String apellidoM) {
 
-
-        List<BeanUser> usuarios = userService.buscarPorNombreYApellidosAfiliado(nombre, apellidoP, apellidoM);
-
-        if (usuarios.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        List<AfiliadoDTO> usuarios =
+                userService.buscarPorNombreYApellidosAfiliado(
+                        nombre,
+                        apellidoP,
+                        apellidoM
+                );
 
         return ResponseEntity.ok(usuarios);
     }

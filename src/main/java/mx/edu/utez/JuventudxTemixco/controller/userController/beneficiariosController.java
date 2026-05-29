@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.controller.userController;
 
 import jakarta.validation.Valid;
+import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AdministradorDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AfiliadoDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.BeneficiarioDTO;
 import mx.edu.utez.JuventudxTemixco.models.municipalities.BeanMunicipality;
@@ -68,18 +69,18 @@ public class beneficiariosController {
         return userService.buscarConFiltrosBeneficiario(inicio, fin);
     }
 
-    @GetMapping("/buscarBeneficiario") //
-    public ResponseEntity<List<BeanUser>> buscarPorNombreYApellidosBeneficairio(
+    @GetMapping("/buscar")
+    public ResponseEntity<List<BeneficiarioDTO>> buscarPorNombreYApellidos(
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellidoP", required = false) String apellidoP,
-            @RequestParam(value = "apellidoM", required = false) String apellidoM){
+            @RequestParam(value = "apellidoM", required = false) String apellidoM) {
 
-
-        List<BeanUser> usuarios = userService.buscarPorNombreYApellidosBeneficiario(nombre, apellidoP, apellidoM);
-
-        if (usuarios.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+        List<BeneficiarioDTO> usuarios =
+                userService.buscarPorNombreYApellidosBeneficiario(
+                        nombre,
+                        apellidoP,
+                        apellidoM
+                );
 
         return ResponseEntity.ok(usuarios);
     }

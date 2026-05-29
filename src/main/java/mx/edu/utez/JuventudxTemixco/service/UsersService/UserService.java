@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.service.UsersService;
 
 import jakarta.validation.constraints.Size;
+import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AdministradorDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.AfiliadoDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.usersDto.BeneficiarioDTO;
 import mx.edu.utez.JuventudxTemixco.models.municipalities.BeanMunicipality;
@@ -239,16 +240,6 @@ public class UserService {
     }
 
 
-    public List<BeanUser> buscarPorNombreYApellidosBeneficiario(String nombre, String apellidoP, String apellidoM) {
-
-        String buscarNombre = (nombre != null) ? nombre : "";
-        String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
-        String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
-
-
-        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.BENEFICIARIO);
-    }
-
 
     public List<BeanUser> buscarConFiltrosAfiliado(LocalDate inicio, LocalDate fin) {
 
@@ -260,14 +251,75 @@ public class UserService {
     }
 
 
-    public List<BeanUser> buscarPorNombreYApellidosAfiliado(String nombre, String apellidoP, String apellidoM) {
+    public List<BeneficiarioDTO> buscarPorNombreYApellidosBeneficiario (String nombre, String apellidoP, String apellidoM) {
 
-        String buscarNombre = (nombre != null) ? nombre : "";
-        String buscarApellidoP = (apellidoP != null) ? apellidoP : "";
-        String buscarApellidoM = (apellidoM != null) ? apellidoM : "";
+        String buscarNombre = (nombre != null && !nombre.isBlank()) ? nombre : null;
+        String buscarApellidoP = (apellidoP != null && !apellidoP.isBlank()) ? apellidoP : null;
+        String buscarApellidoM = (apellidoM != null && !apellidoM.isBlank()) ? apellidoM : null;
+
+        List<BeanUser> usuarios = userRepository.BusquedaNombre(
+                buscarNombre,
+                buscarApellidoP,
+                buscarApellidoM,
+                UserType.BENEFICIARIO
+        );
+
+        return usuarios.stream()
+                .map(user -> {
+                    BeneficiarioDTO dto = new BeneficiarioDTO();
+
+                    dto.setId(user.getId());
+                    dto.setNombre(user.getNombre());
+                    dto.setApellidoP(user.getApellidoP());
+                    dto.setApellidoM(user.getApellidoM());
+                    dto.setGenero(user.getGenero());
+                    dto.setEdad(user.getEdad());
+                    dto.setTelefono(user.getTelefono());
+                    if (user.getFoto() != null) {
+                        String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
+                        dto.setFoto(base64String);
+                    }
+
+                    return dto;
+                })
+                .toList();
+    }
 
 
-        return userRepository.BusquedaNombre(buscarNombre, buscarApellidoP, buscarApellidoM, UserType.AFILIADO);
+    public List<AfiliadoDTO> buscarPorNombreYApellidosAfiliado (String nombre, String apellidoP, String apellidoM) {
+
+        String buscarNombre = (nombre != null && !nombre.isBlank()) ? nombre : null;
+        String buscarApellidoP = (apellidoP != null && !apellidoP.isBlank()) ? apellidoP : null;
+        String buscarApellidoM = (apellidoM != null && !apellidoM.isBlank()) ? apellidoM : null;
+
+        List<BeanUser> usuarios = userRepository.BusquedaNombre(
+                buscarNombre,
+                buscarApellidoP,
+                buscarApellidoM,
+                UserType.AFILIADO
+        );
+
+        return usuarios.stream()
+                .map(user -> {
+                    AfiliadoDTO dto = new AfiliadoDTO();
+
+                    dto.setId(user.getId());
+                    dto.setNombre(user.getNombre());
+                    dto.setApellidoP(user.getApellidoP());
+                    dto.setApellidoM(user.getApellidoM());
+                    dto.setEdad(user.getEdad());
+                    dto.setTelefono(user.getTelefono());
+                    dto.setGenero(user.getGenero());
+                    if (user.getFoto() != null) {
+                        String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
+                        dto.setFoto(base64String);
+                    }
+
+                    return dto;
+                })
+                .toList();
     }
 
 }
+
+

@@ -14,11 +14,10 @@ public interface UserRepository extends JpaRepository <BeanUser, Long> {
 
     List<BeanUser> findByRol(UserType rol);
 
-    @Query("SELECT u FROM BeanUser u WHERE (" +
-            "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
-            "LOWER(u.apellidoP) LIKE LOWER(CONCAT('%', :apellidoP, '%')) OR " +
-            "LOWER(u.apellidoM) LIKE LOWER(CONCAT('%', :apellidoM, '%'))" +
-            ") AND u.rol = :rol")
+    @Query(""" 
+SELECT u FROM BeanUser u WHERE u.rol = :rol AND ((:nombre IS NOT NULL AND LOWER(u.nombre) LIKE LOWER(CONCAT('%', :nombre, '%')))
+    OR (:apellidoP IS NOT NULL AND LOWER(u.apellidoP) LIKE LOWER(CONCAT('%', :apellidoP, '%')))
+    OR(:apellidoM IS NOT NULL AND LOWER(u.apellidoM) LIKE LOWER(CONCAT('%', :apellidoM, '%'))))""")
     List<BeanUser> BusquedaNombre(
             @Param("nombre") String nombre,
             @Param("apellidoP") String apellidoP,
