@@ -31,4 +31,12 @@ public class GoalController {
         return new ResponseEntity<>(goalService.updateDescription(id, dto), HttpStatus.OK);
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> findByName(@PathVariable String name) {
+        return new ResponseEntity<>(
+                goalService.findByName(name),
+                HttpStatus.OK
+        );
+    }
+
 }
