@@ -65,9 +65,11 @@ public class afiliadosController {
         return ResponseEntity.ok(usuarios);
     }
 
-    @GetMapping("/rangoFechas") //
-    public List<BeanUser> rangoFechaAfiliado(LocalDate inicio, LocalDate fin) {
-        return userService.buscarConFiltrosAfiliado(inicio, fin);
+    @GetMapping("/filtro") //
+    public List<AfiliadoDTO> rangoFechaAfiliado( @RequestParam LocalDate fechaInicio,
+                                              @RequestParam LocalDate fechaFin) {
+
+        return userService.buscarConFiltrosAfiliado(fechaInicio, fechaFin);
     }
 
 }

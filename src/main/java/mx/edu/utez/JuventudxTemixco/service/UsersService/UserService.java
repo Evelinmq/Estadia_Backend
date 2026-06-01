@@ -230,25 +230,39 @@ public class UserService {
 
 
     // Filtros
-    public List<BeanUser> buscarConFiltrosBeneficiario(LocalDate inicio, LocalDate fin) {
+    public List<BeneficiarioDTO> buscarConFiltrosBeneficiario(LocalDate inicio, LocalDate fin) {
 
 
         if (inicio == null) inicio = LocalDate.now().minusMonths(1); // Hace un mes
         if (fin == null) fin = LocalDate.now().plusMonths(1);       // En un mes
 
-        return userRepository.filtrarDinamico(inicio, fin, UserType.BENEFICIARIO);
+        List<BeanUser> usuarios =
+                userRepository.filtrarDinamico(inicio, fin, UserType.BENEFICIARIO);
+
+
+        return usuarios.stream()
+                .map(this::convertirABeneficiarioDTO)
+                .toList();
     }
 
 
 
-    public List<BeanUser> buscarConFiltrosAfiliado(LocalDate inicio, LocalDate fin) {
+
+    public List<AfiliadoDTO> buscarConFiltrosAfiliado(LocalDate inicio, LocalDate fin) {
 
 
         if (inicio == null) inicio = LocalDate.now().minusMonths(1); // Hace un mes
         if (fin == null) fin = LocalDate.now().plusMonths(1);       // En un mes
 
-        return userRepository.filtrarDinamico(inicio, fin, UserType.AFILIADO);
+        List<BeanUser> usuarios =
+                userRepository.filtrarDinamico(inicio, fin, UserType.AFILIADO);
+
+
+        return usuarios.stream()
+                .map(this::convertirAfiliadoDTO)
+                .toList();
     }
+
 
 
     public List<BeneficiarioDTO> buscarPorNombreYApellidosBeneficiario (String nombre, String apellidoP, String apellidoM) {
@@ -319,6 +333,56 @@ public class UserService {
                 })
                 .toList();
     }
+
+    //convertir Bean user a dto, para filtro de fecha
+    private BeneficiarioDTO convertirABeneficiarioDTO(BeanUser user) {
+        BeneficiarioDTO dto = new BeneficiarioDTO();
+
+        dto.setId(user.getId());
+        dto.setNombre(user.getNombre());
+        dto.setApellidoP(user.getApellidoP());
+        dto.setApellidoM(user.getApellidoM());
+        dto.setGenero(user.getGenero());
+        dto.setEdad(user.getEdad());
+        dto.setTelefono(user.getTelefono());
+
+        if (user.getMunicipio() != null) {
+            dto.setId_Municipio(user.getMunicipio().getId());
+        }
+
+        dto.setColonia(user.getColonia());
+        dto.setCorreo(user.getCorreo());
+
+        if (user.getFoto() != null) {
+            String base64String =
+                    java.util.Base64.getEncoder().encodeToString(user.getFoto());
+            dto.setFoto(base64String);
+        }
+
+        return dto;
+    }
+
+
+    private AfiliadoDTO convertirAfiliadoDTO(BeanUser user) {
+        AfiliadoDTO dto = new AfiliadoDTO();
+
+        dto.setId(user.getId());
+        dto.setNombre(user.getNombre());
+        dto.setApellidoP(user.getApellidoP());
+        dto.setApellidoM(user.getApellidoM());
+        dto.setGenero(user.getGenero());
+        dto.setEdad(user.getEdad());
+        dto.setTelefono(user.getTelefono());
+
+        if (user.getFoto() != null) {
+            String base64String =
+                    java.util.Base64.getEncoder().encodeToString(user.getFoto());
+            dto.setFoto(base64String);
+        }
+
+        return dto;
+    }
+
 
 }
 

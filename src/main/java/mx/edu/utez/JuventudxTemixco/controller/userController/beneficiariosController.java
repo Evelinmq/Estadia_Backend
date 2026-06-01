@@ -64,9 +64,12 @@ public class beneficiariosController {
 
 
     //Filtros
-    @GetMapping("/rangoFecha") //
-    public List<BeanUser> rangoFechaBeneficiario(LocalDate inicio, LocalDate fin) {
-        return userService.buscarConFiltrosBeneficiario(inicio, fin);
+    @GetMapping("/filtro")
+    public List<BeneficiarioDTO> rangoFechaBeneficiario(
+            @RequestParam LocalDate fechaInicio,
+            @RequestParam LocalDate fechaFin) {
+
+        return userService.buscarConFiltrosBeneficiario(fechaInicio, fechaFin);
     }
 
     @GetMapping("/buscar")
