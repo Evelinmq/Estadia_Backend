@@ -36,6 +36,7 @@ public class BeneficiarioDTO {
 
     private Long id_Municipio;
 
+    private String municipio;
 
     private String colonia;
 

@@ -110,6 +110,7 @@ public class UserService {
                     dto.setEdad(user.getEdad());
                     dto.setTelefono(user.getTelefono());
                     dto.setId_Municipio(user.getMunicipio().getId());
+                    dto.setMunicipio(user.getMunicipio().getNombre());
                     dto.setColonia(user.getColonia());
                     dto.setCorreo(user.getCorreo());
                     if (user.getFoto() != null) {
@@ -289,6 +290,12 @@ public class UserService {
                     dto.setGenero(user.getGenero());
                     dto.setEdad(user.getEdad());
                     dto.setTelefono(user.getTelefono());
+
+                    if (user.getMunicipio() != null) {
+                        dto.setId_Municipio(user.getMunicipio().getId());
+                        dto.setMunicipio(user.getMunicipio().getNombre());
+                    }
+
                     if (user.getFoto() != null) {
                         String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
                         dto.setFoto(base64String);
@@ -348,6 +355,7 @@ public class UserService {
 
         if (user.getMunicipio() != null) {
             dto.setId_Municipio(user.getMunicipio().getId());
+            dto.setMunicipio(user.getMunicipio().getNombre());
         }
 
         dto.setColonia(user.getColonia());
