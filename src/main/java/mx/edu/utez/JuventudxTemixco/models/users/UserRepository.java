@@ -33,4 +33,8 @@ SELECT u FROM BeanUser u WHERE u.rol = :rol AND ((:nombre IS NOT NULL AND LOWER(
             @Param("fechaFin") LocalDate fechaFin,
             @Param("rol") UserType rol
     );
+
+    List<BeanUser> correo(String correo);
+
+    BeanUser findByCorreo(String correo);
 }
