@@ -1,4 +1,4 @@
-package mx.edu.utez.JuventudxTemixco.Security;
+package mx.edu.utez.JuventudxTemixco.service.Auth;
 
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
@@ -14,29 +14,27 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ApplicationUserDetailsService implements UserDetailsService {
-
     private final UserRepository userRepository;
 
     public ApplicationUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     @Override
-    public UserDetails loadUserByUsername(String username) throws
+    public UserDetails loadUserByUsername(String correo) throws
             UsernameNotFoundException {
 
-        BeanUser user = userRepository.findByUsername(username);
+        BeanUser user = userRepository.findByCorreo(correo);
         if (user == null) {
-            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+            throw new UsernameNotFoundException("Usuario no encontrado: " + correo);
         }
-        if (user.getRole() == null) {
-            throw new UsernameNotFoundException("Usuario sin rol asignado: " + username);
+        if (user.getRol() == null) {
+            throw new UsernameNotFoundException("Usuario sin rol asignado: " + correo);
         }
         return User.builder()
 
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .disabled(!user.isEnabled())
+                .username(user.getCorreo())
+                .password(user.getContrasena())
+                .roles(user.getRol().name())
                 .build();
 
     }
