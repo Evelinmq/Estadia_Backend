@@ -10,6 +10,7 @@ import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
 import mx.edu.utez.JuventudxTemixco.models.users.UserType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,9 +25,11 @@ public class UserService {
 
     private UserRepository userRepository;
 
+
     public UserService(MunicipalityRepository municipalityRepository, UserRepository userRepository) {
         this.municipalityRepository = municipalityRepository;
         this.userRepository = userRepository;
+
     }
 
     // Beneficiario
