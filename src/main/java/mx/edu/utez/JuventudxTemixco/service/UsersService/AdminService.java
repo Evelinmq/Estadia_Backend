@@ -9,6 +9,7 @@ import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
 import mx.edu.utez.JuventudxTemixco.models.users.UserType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,10 +21,13 @@ public class AdminService {
 
     private MunicipalityRepository municipalityRepository;
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public AdminService(UserRepository userRepository) {
+    public AdminService(MunicipalityRepository municipalityRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.municipalityRepository = municipalityRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public BeanUser createUserAdmin(AdministradorDTO datos) {
@@ -38,7 +42,7 @@ public class AdminService {
         user.setApellidoP(datos.getApellidoP());
         user.setApellidoM(datos.getApellidoM());
         user.setCorreo(datos.getCorreo());
-        user.setContrasena(datos.getContrasena());
+        user.setContrasena(passwordEncoder.encode(datos.getContrasena()));
         user.setRol(UserType.ADMIN);
 
         return userRepository.save(user);
@@ -91,7 +95,7 @@ public class AdminService {
         existente.setApellidoP(datos.getApellidoP());
         existente.setApellidoM(datos.getApellidoM());
         existente.setCorreo(datos.getCorreo());
-        existente.setContrasena(datos.getContrasena());
+        existente.setContrasena(passwordEncoder.encode(datos.getContrasena()));
 
 
         return userRepository.save(existente);
