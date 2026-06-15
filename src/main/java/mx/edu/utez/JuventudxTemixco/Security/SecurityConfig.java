@@ -103,6 +103,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/api/afiliados/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/beneficiarios/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,  "/api/beneficiarios/Municipios").permitAll()
 
 
                         .requestMatchers(HttpMethod.OPTIONS,
