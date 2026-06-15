@@ -50,19 +50,19 @@ public class JwtService {
         return signingKey;
     }
     /**
-     * @param username sujeto del token (típicamente el nombre de usuario
+     * @param correo sujeto del token (típicamente el nombre de usuario
     en login)
      * @param roleAuthorities nombres de rol para Spring, p. ej. "ROLE_USER",
     "ROLE_ADMIN"
      */
-    public String generateAccessToken(String username, Collection<String>
+    public String generateAccessToken(String correo, Collection<String>
             roleAuthorities) {
 
         Instant now = Instant.now();
         Instant exp = now.plusMillis(expirationMs);
         return Jwts.builder()
 
-                .subject(username)
+                .subject(correo)
                 .claim(ROLES_CLAIM, List.copyOf(roleAuthorities))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(exp))

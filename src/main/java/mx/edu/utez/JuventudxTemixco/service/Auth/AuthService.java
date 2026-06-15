@@ -2,81 +2,83 @@ package mx.edu.utez.JuventudxTemixco.service.Auth;
 
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginResponseDTO;
+import mx.edu.utez.JuventudxTemixco.Security.JwtService;
 import mx.edu.utez.JuventudxTemixco.models.users.BeanUser;
 import mx.edu.utez.JuventudxTemixco.models.users.UserRepository;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository) {
+
+    private final Map<String, String> codigosTemporales = new ConcurrentHashMap<>();
+
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
+        this.jwtService = jwtService;
     }
 
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginDTO loginDTO) {
-        // 3. Buscar por correo usando tu BeanUsuario
-        BeanUser usuario = userRepository.findByCorreo(loginDTO.getCorreo())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // 1. Buscar por correo
+        BeanUser usuario = userRepository.findByCorreo(loginDTO.getCorreo());
+        if (usuario == null) {
+            throw new RuntimeException("Usuario o contraseña incorrectos"); // Se corrigió a 'throw'
+        }
 
-        // 4. Comparar contraseñas encriptadas
+        // 2. Comparar contraseñas encriptadas
         if (!passwordEncoder.matches(loginDTO.getPassword(), usuario.getContrasena())) {
-            throw new RuntimeException("Contraseña incorrecta");
+            throw new RuntimeException("Usuario o contraseña incorrectos");
         }
 
-        //se verifica el estado
-        if (usuario.getEstado() == null || usuario.getEstado().getId() != 1L) {
-            if (usuario.getEstado() != null && usuario.getEstado().getId() == 3L) {
-                throw new RuntimeException("Tu cuenta está pendiente de aprobación por un administrador.");
-            }
-            throw new RuntimeException("Tu cuenta no está activa.");
+        // 3. Extraer el rol (se maneja el estándar con prefijo para el token)
+        String nombreRol = "ADMIN";
+        if (usuario.getRol() != null) {
+            nombreRol = usuario.getRol().name().toUpperCase();
         }
 
-        // 5. Extraer el rol
-        String nombreRol = "aprendiz"; // valor por defecto
-        if (usuario.getRoles() != null && !usuario.getRoles().isEmpty()) {
-            nombreRol = usuario.getRoles().stream()
-                    .map(rol -> rol.getNombre().toLowerCase())
-                    .collect(Collectors.joining(","));
-        }
+        // Generamos el token usando el prefijo ROLE_ que pide Spring Security
+        List<String> rolesList = Collections.singletonList("ROLE_" + nombreRol);
+        String token = jwtService.generateAccessToken(usuario.getCorreo(), rolesList);
 
-        String token = jwtService.generateToken(usuario);
+        // 4. Construir el objeto de respuesta completo para el Frontend
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setId(usuario.getId());
+        response.setNombre(usuario.getNombre() + " " + usuario.getApellidoP() + " " + usuario.getApellidoM());
+        response.setCorreo(usuario.getCorreo());
+        response.setRol("ROLE_" + nombreRol); 
+        response.setAccessToken(token);
+        response.setTokenType("Bearer");
 
-        // 6. Construir el DTO que pide el constructor (Long, String, String, String)
-        return new LoginResponseDTO(
-                usuario.getId(),
-                usuario.getNombre() + " " + usuario.getApellidoP() + " " + usuario.getApellidoM(),
-                usuario.getCorreo(),
-                nombreRol.toLowerCase(),
-                token
-        );
-    }
-
-    public boolean verificarCodigo(String correo, String codigo) {
-        String codigoEnMemoria = codigosTemporales.get(correo);
-        System.out.println("DEBUG: Correo buscado: " + correo);
-        System.out.println("DEBUG: Código en memoria: " + codigoEnMemoria);
-        System.out.println("DEBUG: Código recibido del front: " + codigo);
-
-        return codigo != null && codigo.equals(codigoEnMemoria);
+        return response;
     }
 
     @Transactional
     public void actualizarPassword(String correo, String nuevaPassword) {
-        // Buscamos al usuario por el correo que traemos desde el flujo
-        BeanUser usuario = userRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        BeanUser usuario = userRepository.findByCorreo(correo);
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
 
-        // Encriptamos la nueva contraseña
+        // Encriptamos la nueva contraseña usando BCrypt antes de guardar
         usuario.setContrasena(passwordEncoder.encode(nuevaPassword));
-
-        // Guardamos los cambios
         userRepository.save(usuario);
 
         // Limpiar el código temporal para que no se pueda usar de nuevo
@@ -84,22 +86,24 @@ public class AuthService {
     }
 
     public void generarYEnviarCodigo(String correo) {
-        // 1. Validar usuario
-        usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // 1. Validar que el usuario realmente exista en el sistema
+        BeanUser usuario = userRepository.findByCorreo(correo);
+        if (usuario == null) {
+            throw new RuntimeException("El correo ingresado no pertenece a ningún usuario registrado.");
+        }
 
-        // 2. Generar código
+        // 2. Generar código de 5 dígitos
         String codigo = String.valueOf((int)(Math.random() * 90000) + 10000);
         codigosTemporales.put(correo, codigo);
 
-        // 3. ENVIAR CORREO REAL
+        // 3. Enviar correo electrónico informativo
         try {
             SimpleMailMessage mensaje = new SimpleMailMessage();
             mensaje.setFrom("mentorias.academicas.utez@gmail.com");
             mensaje.setTo(correo);
             mensaje.setSubject("Código de Verificación - Juventud x Temixco");
             mensaje.setText(
-                    "Hola,\n\n" +
+                    "Hola " + usuario.getNombre() + ",\n\n" +
                             "Recibimos una solicitud para restablecer la contraseña de tu cuenta de Juventud x Temixco.\n\n" +
                             "Tu código de verificación es:\n\n" +
                             codigo + "\n\n" +
@@ -110,9 +114,8 @@ public class AuthService {
 
             mailSender.send(mensaje);
         } catch (Exception e) {
-            // Si falla, imprime el error completo en la consola para ver el motivo exacto
             e.printStackTrace();
-            throw new RuntimeException("Error al enviar: " + e.getMessage());
+            throw new RuntimeException("Error al enviar el correo de recuperación: " + e.getMessage());
         }
     }
 }

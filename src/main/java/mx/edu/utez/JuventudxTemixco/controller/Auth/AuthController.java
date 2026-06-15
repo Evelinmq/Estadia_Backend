@@ -1,9 +1,12 @@
 package mx.edu.utez.JuventudxTemixco.controller.Auth;
 
 import jakarta.validation.Valid;
+import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginRequestDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginResponseDTO;
 import mx.edu.utez.JuventudxTemixco.Security.JwtService;
+import mx.edu.utez.JuventudxTemixco.service.Auth.AuthService;
+import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,34 +21,22 @@ import java.util.List;
 @RequestMapping("/api/auth")
 @CrossOrigin({"*"})
 public class AuthController {
+
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtService jwtService) {
-
+    public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.authService = authService;
     }
+
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody
-                                                  LoginRequestDTO body) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO body) {
 
-        Authentication authentication = authenticationManager.authenticate(
+        LoginResponseDTO response = authService.login(body);
 
-                new
-
-                        UsernamePasswordAuthenticationToken(body.getCorreo(), body.getPassword()));
-        List<String> authorities = authentication.getAuthorities().stream()
-
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-        String token =
-
-                jwtService.generateAccessToken(authentication.getName(), authorities);
-
-        return new ResponseEntity<>(new LoginResponseDTO(token, "Bearer"),
-
-                HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

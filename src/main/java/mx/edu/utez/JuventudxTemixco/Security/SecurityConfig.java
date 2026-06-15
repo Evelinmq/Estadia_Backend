@@ -40,8 +40,9 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of(
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
@@ -52,7 +53,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION));
 
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new
 
@@ -96,10 +97,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/api/goal/**").permitAll()
+                        .requestMatchers("/api/Alianza/**", "/api/Alianza").permitAll()
 
-                        .requestMatchers(HttpMethod.POST,
+                        .requestMatchers(HttpMethod.POST, "/api/afiliados/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/beneficiarios/**").permitAll()
 
-                                "/api/user").permitAll()
 
                         .requestMatchers(HttpMethod.OPTIONS,
 

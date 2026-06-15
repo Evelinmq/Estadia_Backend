@@ -8,6 +8,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponseDTO {
-    private String accessToken;
-    private String tokenType;
+
+private Long id;
+private String nombre;
+private String correo;
+private String rol;
+private String accessToken;
+private String tokenType;
+
+
 }

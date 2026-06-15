@@ -40,6 +40,7 @@ public class BeanUser {
 
     private String correo;
 
+    @Column(name = "contrasena", length = 255)
     private String contrasena;
 
 

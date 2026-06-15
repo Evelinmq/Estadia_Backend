@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository <BeanUser, Long> {
     boolean existsByCorreo(String correo);
-
     List<BeanUser> findByRol(UserType rol);
 
     @Query(""" 
