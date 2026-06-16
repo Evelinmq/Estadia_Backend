@@ -137,6 +137,7 @@ public class SecurityConfig {
 
                         // GOAL ----
                         .requestMatchers(HttpMethod.GET, "/api/goal").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/goal/name/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/goal").hasRole("ADMIN")
 
 
