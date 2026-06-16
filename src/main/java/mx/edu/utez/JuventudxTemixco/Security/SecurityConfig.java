@@ -83,6 +83,7 @@ public class SecurityConfig {
 
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
@@ -96,24 +97,62 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").permitAll()
-                        .requestMatchers("/api/section/**").permitAll()
-                        .requestMatchers("/api/program/**").permitAll()
-                        .requestMatchers("/api/goal/**").permitAll()
-                        .requestMatchers("/api/Alianza/**", "/api/Alianza").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/api/afiliados/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/beneficiarios/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/beneficiarios/Municipios").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/beneficiarios/verificarCorreo").permitAll()
-
-
-                        .requestMatchers(HttpMethod.OPTIONS,
-
-                                "/**").permitAll()
-
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/error").permitAll()
+
+                        // LOGIN ----
+                        .requestMatchers("/api/auth/login").permitAll()
+
+                        // ADMIN ----
+                        .requestMatchers(HttpMethod.GET, "/api/admin/**"). hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin/**").hasRole("ADMIN")
+
+                        // AFILIADOS ----
+                        .requestMatchers(HttpMethod.GET, "/api/afiliados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/afiliados/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/afiliados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/afiliados/**").hasRole("ADMIN")
+
+                        // BENEFICIARIOS
+                        .requestMatchers("/api/beneficiarios/Municipios").permitAll()
+                        .requestMatchers("/api/beneficiarios/verificarCorreo").permitAll()
+                        .requestMatchers("/api/beneficiarios/filtro").hasRole("ADMIN")
+                        .requestMatchers("/api/beneficiarios/buscar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/beneficiarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/beneficiarios/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/beneficiarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/beneficiarios/**").hasRole("ADMIN")
+
+                        // ALIANZAS ----
+                        .requestMatchers(HttpMethod.GET, "/api/Alianza/busquedaAlianza").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "api/Alianza/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/Alianza/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/Alianza/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/Alianza/**"). hasRole("ADMIN")
+
+                        // GOAL ----
+                        .requestMatchers(HttpMethod.GET, "/api/goal").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/goal").hasRole("ADMIN")
+
+
+                        // SECTIONS ---
+                        .requestMatchers(HttpMethod.GET, "/api/section/**"). permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/section").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/section/update/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/section/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/section/**").hasRole("ADMIN")
+
+                        // PROGRAMS ----
+                        .requestMatchers(HttpMethod.GET, "/api/program/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/program/update/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/program/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/program/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/program/**").hasRole("ADMIN")
+
+
+
                         .anyRequest().authenticated());
 
         return http.build();

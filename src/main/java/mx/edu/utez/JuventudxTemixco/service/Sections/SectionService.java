@@ -2,6 +2,7 @@ package mx.edu.utez.JuventudxTemixco.service.Sections;
 
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
+import mx.edu.utez.JuventudxTemixco.models.programs.ProgramRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,9 +15,11 @@ import java.util.Optional;
 public class SectionService {
 
     private final SectionRepository sectionRepository;
+    private final ProgramRepository programRepository;
 
-    public SectionService(SectionRepository sectionRepository) {
+    public SectionService(SectionRepository sectionRepository, ProgramRepository programRepository) {
         this.sectionRepository = sectionRepository;
+        this.programRepository = programRepository;
     }
 
     @Transactional
@@ -71,6 +74,12 @@ public class SectionService {
         if (!sectionRepository.existsById(id)) {
             throw new RuntimeException("No es posible eliminar. Sección no encontrada");
         }
+
+        if (programRepository.existsBySectionId(id)) {
+            throw new IllegalStateException("No se puede eliminar: la sección tiene programas asociados");
+        }
+
+
         sectionRepository.deleteById(id);
     }
 
