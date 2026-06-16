@@ -94,9 +94,10 @@ public class AdminService {
         existente.setNombre(datos.getNombre());
         existente.setApellidoP(datos.getApellidoP());
         existente.setApellidoM(datos.getApellidoM());
-        existente.setCorreo(datos.getCorreo());
-        existente.setContrasena(passwordEncoder.encode(datos.getContrasena()));
 
+        if (datos.getContrasena() != null && !datos.getContrasena().trim().isEmpty()) {
+            existente.setContrasena(passwordEncoder.encode(datos.getContrasena()));
+        }
 
         return userRepository.save(existente);
 
