@@ -102,6 +102,9 @@ public class SecurityConfig {
 
                         // LOGIN ----
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/recuperar-password").permitAll()
+                        .requestMatchers("/api/auth/actualizarPassword").permitAll()
+                        .requestMatchers("/api/auth/validarCodigo").permitAll()
 
                         // ADMIN ----
                         .requestMatchers(HttpMethod.GET, "/api/admin/**"). hasRole("ADMIN")
