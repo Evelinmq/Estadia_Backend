@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginRequestDTO;
 import mx.edu.utez.JuventudxTemixco.Dto.Login.LoginResponseDTO;
+import mx.edu.utez.JuventudxTemixco.Dto.NewPassword.EmailDTO;
+import mx.edu.utez.JuventudxTemixco.Dto.NewPassword.PasswordResetDTO;
 import mx.edu.utez.JuventudxTemixco.Security.JwtService;
 import mx.edu.utez.JuventudxTemixco.service.Auth.AuthService;
 import mx.edu.utez.JuventudxTemixco.service.UsersService.UserService;
@@ -38,5 +40,36 @@ public class AuthController {
         LoginResponseDTO response = authService.login(body);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/recuperar-password")
+    public ResponseEntity<String> solicitarRecuperacion(@RequestBody EmailDTO correo) {
+        authService.generarYEnviarCodigo(correo.getCorreo());
+        return ResponseEntity.ok("Se ha enviado un código de verificación a tu correo.");
+    }
+
+    @PostMapping("/validarCodigo")
+    public ResponseEntity<Boolean> validarCodigo(@RequestBody PasswordResetDTO dto) {
+        boolean esValido = authService.validarCodigo(dto.getCorreo(), dto.getCodigo());
+        if (esValido) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
+    }
+
+    @PostMapping("/actualizarPassword")
+    public ResponseEntity<String> actualizarPassword(@RequestBody PasswordResetDTO dto ){
+
+        System.out.println("Correo: " + dto.getCorreo());
+        System.out.println("Codigo: " + dto.getCodigo());
+        System.out.println("Contraseña: " + dto.getContrasena());
+
+        if (!authService.validarCodigo(dto.getCorreo(), dto.getCodigo())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código inválido o expirado");
+        }
+
+        authService.actualizarPassword(dto.getCorreo(), dto.getContrasena());
+        return ResponseEntity.ok("Contraseña actualizada exitosamente.");
     }
 }

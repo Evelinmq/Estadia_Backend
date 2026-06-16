@@ -33,10 +33,15 @@ public class GoalController {
 
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
-        return new ResponseEntity<>(
-                goalService.findByName(name),
-                HttpStatus.OK
-        );
+
+        var goal = goalService.findByName(name);
+
+        if (goal == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró el objetivo con nombre: " + name);
+        }
+
+        return ResponseEntity.ok(goal);
     }
 
 }

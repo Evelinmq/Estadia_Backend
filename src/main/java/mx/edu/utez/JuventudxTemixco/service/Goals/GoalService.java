@@ -36,7 +36,6 @@ public class GoalService {
 
     @Transactional(readOnly = true)
     public BeanGoal findByName(String name) {
-        return goalRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Objetivo no encontrado"));
+        return goalRepository.findByName(name).orElse(null);
     }
 }

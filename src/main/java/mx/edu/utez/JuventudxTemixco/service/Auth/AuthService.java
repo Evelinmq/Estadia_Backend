@@ -86,14 +86,20 @@ public class AuthService {
     }
 
     public void generarYEnviarCodigo(String correo) {
+
+        System.out.println("Correo recibido: [" + correo + "]");
         // 1. Validar que el usuario realmente exista en el sistema
         BeanUser usuario = userRepository.findByCorreo(correo);
+
+        System.out.println("Usuario encontrado: " + usuario);
+
         if (usuario == null) {
             throw new RuntimeException("El correo ingresado no pertenece a ningún usuario registrado.");
         }
 
         // 2. Generar código de 5 dígitos
         String codigo = String.valueOf((int)(Math.random() * 90000) + 10000);
+
         codigosTemporales.put(correo, codigo);
 
         // 3. Enviar correo electrónico informativo
@@ -117,5 +123,16 @@ public class AuthService {
             e.printStackTrace();
             throw new RuntimeException("Error al enviar el correo de recuperación: " + e.getMessage());
         }
+    }
+
+    public boolean validarCodigo(String correo, String codigoIngresado) {
+        String codigoGuardado = codigosTemporales.get(correo);
+
+
+        // Verificamos si existe y si coincide
+        if (codigoGuardado != null && codigoGuardado.equals(codigoIngresado)) {
+            return true;
+        }
+        return false;
     }
 }
