@@ -66,7 +66,7 @@ public class JwtService {
                 .claim(ROLES_CLAIM, List.copyOf(roleAuthorities))
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(exp))
-                .signWith(signingKey())
+                .signWith(signingKey(), Jwts.SIG.HS256)
                 .compact();
 
     }
@@ -101,6 +101,7 @@ public class JwtService {
             parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("=== ERROR VALIDANDO JWT EN BACKEND: " + e.getMessage());
             return false;
         }
     }
