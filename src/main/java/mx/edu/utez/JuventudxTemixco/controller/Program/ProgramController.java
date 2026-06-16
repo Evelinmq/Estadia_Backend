@@ -32,7 +32,8 @@ public class ProgramController {
         return new ResponseEntity<>(programService.save(section_id, archivo), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @PostMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update (
             @PathVariable Long id,
             @RequestParam (value = "section_id", required = false) Long section_id,

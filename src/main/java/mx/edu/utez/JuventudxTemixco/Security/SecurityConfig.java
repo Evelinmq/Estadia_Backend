@@ -146,6 +146,7 @@ public class SecurityConfig {
 
                         // PROGRAMS ----
                         .requestMatchers(HttpMethod.GET, "/api/program/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/program/update/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/program/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/program/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/program/**").hasRole("ADMIN")
