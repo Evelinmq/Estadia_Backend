@@ -155,6 +155,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/program/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/program/**").hasRole("ADMIN")
 
+                        // DONATIONS ----
+                        .requestMatchers(HttpMethod.GET, "/api/Donacion/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/Donacion/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/Donacion/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/Donacion/**").hasRole("ADMIN")
 
 
                         .anyRequest().authenticated());

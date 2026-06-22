@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.models.donations;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,21 +18,30 @@ import java.time.LocalDateTime;
 public class BeanDonation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_donacion;
 
+    @NotNull (message = "El nombre es obligatorio")
     private String nombre;
+    @NotNull (message = "El apellido Paterno es obligatorio")
     private String apellidoP;
+    @NotNull (message = "El apellido materno es obligatorio")
     private String apellidoM;
+    @NotNull (message = "El correo es obligatorio")
     private String correo;
+    @NotNull (message = "El monto es obligatorio")
     private Integer monto;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Gender estado;
+    private Status estado;
 
-    @Column(name = "stripe_session_id")
-    private String stripeSessionId;
-
+    @Column(nullable = false, updatable = false)
     private LocalDateTime fecha;
 
+    @PrePersist
+    protected void onCreate() {
+        fecha = LocalDateTime.now();
+    }
+    private String paypal_order_id;
+    private String paypal_capture_id;
 }
