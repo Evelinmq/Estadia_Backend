@@ -19,9 +19,8 @@ public class DonationService {
     private final DonationRepository donationRepository;
 
     @Transactional
-    public BeanDonation save (BeanDonation donation) {
-        donation.setEstado(Status.PENDIENTE);
-
+    public BeanDonation save(BeanDonation donation) {
+        donation.setEstado(Status.COMPLETADA);
         return donationRepository.save(donation);
     }
 
