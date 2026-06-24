@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.models.Goals;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,10 @@ public class BeanGoal {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String description;
 

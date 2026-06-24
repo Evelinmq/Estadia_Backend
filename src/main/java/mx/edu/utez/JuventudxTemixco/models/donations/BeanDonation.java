@@ -1,7 +1,9 @@
 package mx.edu.utez.JuventudxTemixco.models.donations;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,22 +22,24 @@ public class BeanDonation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_donacion;
 
-    @NotNull (message = "El nombre es obligatorio")
+    @NotBlank (message = "El nombre es obligatorio")
     private String nombre;
-    @NotNull (message = "El apellido Paterno es obligatorio")
+    @NotBlank (message = "El apellido Paterno es obligatorio")
     private String apellidoP;
-    @NotNull (message = "El apellido materno es obligatorio")
+    @NotBlank (message = "El apellido materno es obligatorio")
     private String apellidoM;
-    @NotNull (message = "El correo es obligatorio")
+    @NotBlank(message = "El correo es obligatorio")
     private String correo;
     @NotNull (message = "El monto es obligatorio")
     private Integer monto;
 
     @Enumerated(EnumType.STRING)
+    @NotBlank
     @Column(name = "status")
     private Status estado;
 
     @Column(nullable = false, updatable = false)
+    @PastOrPresent
     private LocalDateTime fecha;
 
     @PrePersist

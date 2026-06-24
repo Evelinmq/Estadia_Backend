@@ -20,6 +20,7 @@ public class DonationService {
 
     @Transactional
     public BeanDonation save (BeanDonation donation) {
+        donation.setEstado(Status.PENDIENTE);
 
         return donationRepository.save(donation);
     }
