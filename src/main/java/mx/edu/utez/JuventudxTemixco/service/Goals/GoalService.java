@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GoalService {
@@ -36,6 +37,12 @@ public class GoalService {
 
     @Transactional(readOnly = true)
     public BeanGoal findByName(String name) {
-        return goalRepository.findByName(name).orElse(null);
+        Optional<BeanGoal> goal = goalRepository.findByName(name);
+
+        if (goal.isEmpty()) {
+            throw new RuntimeException("No se encontró el objetivo con nombre: " + name);
+        }
+
+        return goal.orElse(null);
     }
 }

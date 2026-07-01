@@ -108,4 +108,17 @@ public class ProgramService {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public byte[] getImagenPrograma(Long id){
+        BeanProgram program = programRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Imagen no encontrada"));
+
+        if(program.getImage() == null) {
+            throw new RuntimeException("EL programa no cuenta con una imagen guardada");
+
+        }
+
+        return program.getImage();
+    }
 }

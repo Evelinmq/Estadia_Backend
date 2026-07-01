@@ -1,6 +1,7 @@
 package mx.edu.utez.JuventudxTemixco.controller.Goal;
 
 
+import lombok.RequiredArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.Dto.Goal.UpdateDescriptionDTO;
 import mx.edu.utez.JuventudxTemixco.service.Goals.GoalService;
 import org.springframework.http.HttpStatus;
@@ -10,13 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/goal")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequiredArgsConstructor
 public class GoalController {
 
     private final GoalService goalService;
-
-    public GoalController(GoalService goalService) {
-        this.goalService = goalService;
-    }
 
     @GetMapping
     public ResponseEntity<?> list() {
@@ -34,14 +32,7 @@ public class GoalController {
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
 
-        var goal = goalService.findByName(name);
-
-        if (goal == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró el objetivo con nombre: " + name);
-        }
-
-        return ResponseEntity.ok(goal);
+        return ResponseEntity.ok(goalService.findByName(name));
     }
 
 }
