@@ -127,6 +127,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/beneficiarios/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/beneficiarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/beneficiarios/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reportes/beneficiarios/pdf").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reportes/beneficiario/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reportes/afiliado/").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/reportes/afiliado/pdf").permitAll()
 
                         // ALIANZAS ----
                         .requestMatchers(HttpMethod.GET, "/api/Alianza/busquedaAlianza").hasRole("ADMIN")

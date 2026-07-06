@@ -105,7 +105,7 @@ public class AuthService {
         // 3. Enviar correo electrónico informativo
         try {
             SimpleMailMessage mensaje = new SimpleMailMessage();
-            mensaje.setFrom("mentorias.academicas.utez@gmail.com");
+            mensaje.setFrom("JuventudPorTemixcoA.C@gmail.com");
             mensaje.setTo(correo);
             mensaje.setSubject("Código de Verificación - Juventud x Temixco");
             mensaje.setText(
