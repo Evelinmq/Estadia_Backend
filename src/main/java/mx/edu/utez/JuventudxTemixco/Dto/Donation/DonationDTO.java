@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.JuventudxTemixco.models.users.Gender;
+import mx.edu.utez.JuventudxTemixco.models.donations.BeanDonation;
 
-import java.time.LocalDateTime;
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DonationDTO {
 
         private String nombre;
@@ -16,12 +17,21 @@ public class DonationDTO {
         private String correo;
         private Integer monto;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "status")
+        private String paypalOrderId;
+        private String paypalCaptureId;
 
-        private LocalDateTime fecha;
+        public BeanDonation toEntity() {
+                BeanDonation donation = new BeanDonation();
 
-        private String paypal_order_id;
-        private String paypal_capture_id;
+                donation.setNombre(nombre);
+                donation.setApellidoP(apellidoP);
+                donation.setApellidoM(apellidoM);
+                donation.setCorreo(correo);
+                donation.setMonto(monto);
 
+                donation.setPaypal_order_id(paypalOrderId);
+                donation.setPaypal_capture_id(paypalCaptureId);
+
+                return donation;
+        }
 }

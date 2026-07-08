@@ -1,5 +1,6 @@
 package mx.edu.utez.JuventudxTemixco.controller.Program;
 
+import lombok.RequiredArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.Dto.Program.ProgramDTO;
 import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
 import mx.edu.utez.JuventudxTemixco.service.Programs.ProgramService;
@@ -9,20 +10,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/program")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequiredArgsConstructor
 public class ProgramController {
 
     private final ProgramService programService;
-
-    public ProgramController(ProgramService programService) {
-        this.programService = programService;
-    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save (
@@ -48,18 +48,20 @@ public class ProgramController {
     }
 
     @GetMapping("/file/{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable Long id) {
-        BeanProgram program = programService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Program nor found"));
+    public ResponseEntity<byte[]> getFile(@PathVariable Long id) throws IOException{
+        byte[] archivoBytes = programService.getImagenPrograma(id);
 
-        if (program.getImage() == null) {
-            return ResponseEntity.notFound().build();
+        String contentType = URLConnection.guessContentTypeFromStream(
+                new java.io.ByteArrayInputStream(archivoBytes)
+        );
+
+        if (contentType == null) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
         }
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .contentType(MediaType.IMAGE_PNG)
-                .body(program.getImage());
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(archivoBytes);
     }
 
     @GetMapping("/bySection/{idSection}")

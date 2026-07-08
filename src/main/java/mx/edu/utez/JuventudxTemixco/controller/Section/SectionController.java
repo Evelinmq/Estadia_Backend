@@ -1,5 +1,6 @@
 package mx.edu.utez.JuventudxTemixco.controller.Section;
 
+import lombok.RequiredArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
 import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
@@ -16,17 +17,10 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/section")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequiredArgsConstructor
 public class SectionController {
 
     private final SectionService service;
-    private final SectionRepository sectionRepository;
-    private ProgramRepository programRepository;
-
-    public SectionController(SectionService service, SectionRepository sectionRepository, ProgramRepository programRepository) {
-        this.service = service;
-        this.sectionRepository = sectionRepository;
-        this.programRepository = programRepository;
-    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save (
@@ -54,16 +48,11 @@ public class SectionController {
 
     @GetMapping("/imagen/{id}")
     public ResponseEntity<byte[]> getImagen(@PathVariable Long id) {
-        BeanSection section = service.findById(id)
-                .orElseThrow(() -> new RuntimeException("Section not found"));
-
-        if (section.getImage() == null) {
-            return ResponseEntity.notFound().build();
-        }
+        byte[] imagen = service.getImagenSeccion(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(section.getImage());
+                .body(imagen);
     }
 
     @GetMapping("/byName")
@@ -73,34 +62,24 @@ public class SectionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            service.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        service.delete(id);
+        return ResponseEntity.noContent().build();
 
     }
 
     @GetMapping("/{id}/programs")
     public ResponseEntity<?>getProgramasPorSeccion(@PathVariable Long id) {
-        BeanSection section = service.findById(id)
-                .orElseThrow(() -> new RuntimeException("Section not found"));
-        return ResponseEntity.ok(section.getPrograms());
+
+        return ResponseEntity.ok(service.getProgramasPorSeccion(id));
     }
 
     @GetMapping("/program/image/{id}")
     public ResponseEntity<byte[]>getImagenPrograma(@PathVariable Long id) {
-        BeanProgram program = programRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Images not found"));
-
-        if (program.getImage() == null) {
-            return ResponseEntity.notFound().build();
-        }
+        byte[] imagen = service.getImagenPrograma(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(program.getImage());
+                .body(imagen);
     }
 
 }

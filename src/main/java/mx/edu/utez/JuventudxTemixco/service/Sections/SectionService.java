@@ -2,6 +2,7 @@ package mx.edu.utez.JuventudxTemixco.service.Sections;
 
 import mx.edu.utez.JuventudxTemixco.models.Sections.BeanSection;
 import mx.edu.utez.JuventudxTemixco.models.Sections.SectionRepository;
+import mx.edu.utez.JuventudxTemixco.models.programs.BeanProgram;
 import mx.edu.utez.JuventudxTemixco.models.programs.ProgramRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +82,38 @@ public class SectionService {
 
 
         sectionRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getImagenSeccion(Long id) {
+        BeanSection section = sectionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Section not found"));
+
+        if (section.getImage() == null) {
+            throw new RuntimeException("La sección no cuenta con una imagen guardada");
+        }
+
+        return section.getImage();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BeanProgram> getProgramasPorSeccion(Long id) {
+        BeanSection section = sectionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Section not found"));
+
+        return section.getPrograms();
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getImagenPrograma(Long id) {
+        BeanProgram program = programRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Program not found"));
+
+        if (program.getImage() == null) {
+            throw new RuntimeException("El programa no cuenta con una imagen guardada");
+        }
+
+        return program.getImage();
     }
 
 }
