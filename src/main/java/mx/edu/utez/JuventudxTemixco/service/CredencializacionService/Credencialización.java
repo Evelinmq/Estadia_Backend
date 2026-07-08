@@ -39,24 +39,4 @@ public class Credencialización {
     }
 
 
-    public byte[] generarCredencial(
-            String nombreReporte,
-            List<?> datos) throws Exception {
-
-        InputStream reporteStream = getClass()
-                .getResourceAsStream("/credenciales/" + nombreReporte + ".jrxml");
-
-        JasperReport reporte =
-                JasperCompileManager.compileReport(reporteStream);
-
-        JRBeanCollectionDataSource source =
-                new JRBeanCollectionDataSource(datos);
-
-        JasperPrint print = JasperFillManager.fillReport(
-                reporte,
-                null,
-                source);
-
-        return JasperExportManager.exportReportToPdf(print);
-    }
 }

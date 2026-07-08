@@ -23,52 +23,52 @@ import java.util.Map;
 public class CredencialesController {
 
 
-        @Autowired
-        private Credencialización reporteService;
+    @Autowired
+    private Credencialización reporteService;
 
-        @Autowired
-        private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
-        //BENEFICIARIO
-        @GetMapping("/beneficiarios/pdf")
-        public ResponseEntity<byte[]> exportarReporte(
+    //BENEFICIARIO
+    @GetMapping("/beneficiarios/pdf")
+    public ResponseEntity<byte[]> exportarReporte(
 
-                @RequestParam(required = false)
-                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                LocalDate inicio,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate inicio,
 
-                @RequestParam(required = false)
-                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                LocalDate fin,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fin,
 
-                @RequestParam(required = false)
-                String busqueda) {
+            @RequestParam(required = false)
+            String busqueda) {
 
-            try {
+        try {
 
-                Map<String, Object> parametros = new HashMap<>();
+            Map<String, Object> parametros = new HashMap<>();
 
-                parametros.put("busqueda", busqueda);
-                parametros.put("inicio", inicio);
-                parametros.put("fin", fin);
-                parametros.put("rol", "BENEFICIARIO");
+            parametros.put("busqueda", busqueda);
+            parametros.put("inicio", inicio);
+            parametros.put("fin", fin);
+            parametros.put("rol", "BENEFICIARIO");
 
-                byte[] pdf = reporteService.generarReporteSQL(
-                        "JuventudPorTemixco",
-                        parametros);
+            byte[] pdf = reporteService.generarReporteSQL(
+                    "JuventudPorTemixco",
+                    parametros);
 
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION,
-                                "attachment; filename=Reporte_Beneficiarios.pdf")
-                        .contentType(MediaType.APPLICATION_PDF)
-                        .body(pdf);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=Reporte_Beneficiarios.pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdf);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.internalServerError().build();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
+    }
 
     @GetMapping("/beneficiario/{id}/pdf")
     public ResponseEntity<byte[]> exportarIndividual(@PathVariable Long id) {
@@ -92,7 +92,7 @@ public class CredencialesController {
     }
 
 
-        //AFILIADO
+    //AFILIADO
     @GetMapping("/afiliado/pdf")
     public ResponseEntity<byte[]> exportarReporteAfiliado(
 
@@ -134,29 +134,23 @@ public class CredencialesController {
 
 
     @GetMapping("/afiliado/{id}/pdf")
-    public ResponseEntity<byte[]> exportarIndividualAfiliados(@PathVariable Long id) {
-
-        BeanUser usuario = userRepository.findById(id).orElse(null);
-
-        if (usuario == null) {
-            return ResponseEntity.notFound().build();
-        }
-
+    public ResponseEntity<byte[]> exportarIndividualAfiliado(@PathVariable Long id) {
         try {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("idUsuario", id);
 
-            byte[] pdf = reporteService.generarCredencial(
+
+            byte[] pdf = reporteService.generarReporteSQL(
                     "JuventudTemixcoAfiliados",
-                    (List<?>) List.of(usuario));
+                    parametros);
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=Credencial_" + usuario.getNombre() + ".pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Credencial_Afiliado.pdf")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(pdf);
-
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
-    }
+}
