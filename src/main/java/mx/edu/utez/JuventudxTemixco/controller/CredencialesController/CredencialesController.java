@@ -145,7 +145,7 @@ public class CredencialesController {
                     parametros);
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Credencial_Afiliado.pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Credencial_Voluntariado.pdf")
                     .contentType(MediaType.APPLICATION_PDF)
                     .body(pdf);
         } catch (Exception e) {

@@ -27,9 +27,9 @@ AND (
 AND ($P{inicio} IS NULL OR DATE(user.fecha_registro) >= $P{inicio})
 AND ($P{fin} IS NULL OR DATE(user.fecha_registro) <= $P{fin})]]>
 	</queryString>
-	<field name="nombre" class="java.lang.String">
+	<field name="Nombre" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
-		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.label" value="Nombre"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="user"/>
 	</field>
 	<field name="Apellido_Paterno" class="java.lang.String">
@@ -121,14 +121,14 @@ AND ($P{fin} IS NULL OR DATE(user.fecha_registro) <= $P{fin})]]>
 					<textElement textAlignment="Center">
 						<font fontName="Arial" size="19" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Afiliado]]></text>
+					<text><![CDATA[Voluntariado]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true">
 					<reportElement x="31" y="51" width="230" height="24" forecolor="#4A0042" uuid="6bb35961-0236-4ead-b15f-bb023ed25b17"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial" size="14" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{nombre}+" "+$F{Apellido_Paterno}+" "+$F{Apellido_Materno}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{Nombre}+" "+$F{Apellido_Paterno}+" "+$F{Apellido_Materno}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
 					<reportElement x="171" y="101" width="89" height="16" uuid="a473526b-fb7f-4f88-87e1-1f602dc52143"/>
@@ -166,19 +166,25 @@ AND ($P{fin} IS NULL OR DATE(user.fecha_registro) <= $P{fin})]]>
 					<imageExpression><![CDATA["img/logo.png"]]></imageExpression>
 				</image>
 				<staticText>
-					<reportElement x="131" y="51" width="20" height="50" forecolor="#4A0042" uuid="67e55f95-468e-4ff7-beb4-71e4870b6032"/>
+					<reportElement x="137" y="42" width="12" height="31" forecolor="#4A0042" uuid="67e55f95-468e-4ff7-beb4-71e4870b6032"/>
 					<textElement>
-						<font size="37" isBold="true"/>
+						<font size="24" isBold="true"/>
 					</textElement>
 					<text><![CDATA[!]]></text>
 				</staticText>
 				<staticText>
-					<reportElement positionType="Float" x="58" y="104" width="170" height="72" forecolor="#4A0042" uuid="215410f8-f257-43fb-aa10-6047a4941c01"/>
+					<reportElement positionType="Float" x="47" y="66" width="196" height="63" forecolor="#4A0042" uuid="215410f8-f257-43fb-aa10-6047a4941c01"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial" size="11" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Si desea saber si esta identificación está vigente, favor de ponerse en contacto con la asociación]]></text>
 				</staticText>
+				<line>
+					<reportElement x="31" y="181" width="226" height="1" forecolor="#4A0042" uuid="62617742-ee2a-482d-82ab-523a43521c9d"/>
+					<graphicElement>
+						<pen lineWidth="1.0"/>
+					</graphicElement>
+				</line>
 			</frame>
 		</band>
 	</detail>

@@ -83,7 +83,7 @@ AND ($P{fin} IS NULL OR DATE(user.fecha_registro) <= $P{fin})]]>
 		<property name="com.jaspersoft.studio.field.tree.path" value="user"/>
 	</field>
 	<background>
-		<band splitType="Stretch"/>
+		<band height="15" splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="34" splitType="Stretch"/>
@@ -209,21 +209,31 @@ AND ($P{fin} IS NULL OR DATE(user.fecha_registro) <= $P{fin})]]>
 				</textField>
 			</frame>
 			<frame>
-				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="279" y="0" width="270" height="200" forecolor="#750559" uuid="3cd835e8-5ac4-44ba-bfd3-68709022c868">
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="290" y="-1" width="270" height="200" forecolor="#750559" uuid="d556a4d8-39d0-40e0-80fd-954a4ed64153"/>
 				<box>
-					<pen lineWidth="1.75" lineStyle="Solid" lineColor="rgba(117, 5, 89, 0.08627451)"/>
-					<topPen lineWidth="1.75" lineStyle="Solid" lineColor="rgba(117, 5, 89, 0.08627451)"/>
-					<leftPen lineWidth="1.75" lineStyle="Solid" lineColor="rgba(117, 5, 89, 0.08627451)"/>
-					<bottomPen lineWidth="1.75" lineStyle="Solid" lineColor="rgba(117, 5, 89, 0.08627451)"/>
-					<rightPen lineWidth="1.75" lineStyle="Solid" lineColor="rgba(117, 5, 89, 0.08627451)"/>
+					<pen lineWidth="1.75" lineStyle="Solid"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#750559"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#750559"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#750559"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#750559"/>
 				</box>
 				<image>
-					<reportElement positionType="Float" x="10" y="13" width="131" height="37" uuid="dc69b4f7-470e-4252-8270-bf42849682c9"/>
+					<reportElement positionType="Float" x="65" y="134" width="164" height="57" uuid="0dac4153-65f5-4ce4-b330-45f6df61bcb5"/>
 					<imageExpression><![CDATA["img/logo.png"]]></imageExpression>
 				</image>
+				<staticText>
+					<reportElement positionType="Float" x="5" y="9" width="260" height="64" forecolor="#4A0042" uuid="ee0fb970-048d-479d-95a2-37c4af3488a1"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Esta credencial es personal , instranferible  y propiedad de la asociación civil juventud por temixco uso exclusivo para ser beneficiario de los distintos programas. No tendrá validez para ningun otro uso.]]></text>
+				</staticText>
+				<line>
+					<reportElement x="24" y="123" width="226" height="1" forecolor="#4A0042" uuid="da8d4a02-3fba-4ee7-b495-5d1f3fd9abd1"/>
+					<graphicElement>
+						<pen lineWidth="1.0"/>
+					</graphicElement>
+				</line>
 			</frame>
 		</band>
 	</detail>
