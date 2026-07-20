@@ -298,6 +298,8 @@ public class UserService {
                         dto.setId_Municipio(user.getMunicipio().getId());
                         dto.setMunicipio(user.getMunicipio().getNombre());
                     }
+                    dto.setColonia(user.getColonia());
+                    dto.setCorreo(user.getCorreo());
 
                     if (user.getFoto() != null) {
                         String base64String = java.util.Base64.getEncoder().encodeToString(user.getFoto());
