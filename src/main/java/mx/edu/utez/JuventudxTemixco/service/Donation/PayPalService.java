@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -61,44 +62,47 @@ public class PayPalService {
     }
 
     // Crea la orden
-    public String createOrder(Integer monto) {
+    public String createOrder(BigDecimal monto) {
+
+        System.out.println("Creando orden de " + monto);
 
         String token = getAccessToken();
 
         Map<String, Object> body =
                 Map.of(
-                        "intent",
-                        "CAPTURE",
+                        "intent", "CAPTURE",
                         "purchase_units",
                         List.of(
                                 Map.of(
                                         "amount",
                                         Map.of(
-                                                "currency_code",
-                                                "MXN",
-                                                "value",
-                                                monto.toString()
+                                                "currency_code", "MXN",
+                                                "value", monto.toPlainString()
                                         )
                                 )
                         )
                 );
 
-        Map response =
-                webClient.post()
-                        .uri(
-                                config.getBaseUrl()
-                                        + "/v2/checkout/orders"
-                        )
-                        .header(
-                                HttpHeaders.AUTHORIZATION,
-                                "Bearer " + token
-                        )
-                        .bodyValue(body)
-                        .retrieve()
-                        .bodyToMono(Map.class)
-                        .block();
+        try {
 
-        return response.get("id").toString();
+            Map response =
+                    webClient.post()
+                            .uri(config.getBaseUrl() + "/v2/checkout/orders")
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                            .bodyValue(body)
+                            .retrieve()
+                            .bodyToMono(Map.class)
+                            .block();
+
+            return response.get("id").toString();
+
+        } catch (WebClientResponseException e) {
+
+            System.out.println("STATUS: " + e.getStatusCode());
+            System.out.println("BODY: " + e.getResponseBodyAsString());
+
+            throw e;
+        }
     }
 
     // Captura de la orden

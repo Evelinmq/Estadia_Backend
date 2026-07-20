@@ -1,21 +1,31 @@
 package mx.edu.utez.JuventudxTemixco.Dto.Donation;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.models.donations.BeanDonation;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class DonationDTO {
 
+        @NotBlank(message = "El nombre es obligatorio")
         private String nombre;
+        @NotBlank (message = "El nombre es obligatorio")
         private String apellidoP;
+        @NotBlank (message = "El nombre es obligatorio")
         private String apellidoM;
+        @Email(message = "el correo debe tener un formato válido")
+        @NotBlank(message = "El correo es obligatorio")
         private String correo;
-        private Integer monto;
+        @NotNull(message = "El monto es obligatorio")
+        @DecimalMin(value = "1.00", message = "EL monto no debe ser menor a 50")
+        private BigDecimal monto;
 
         private String paypalOrderId;
         private String paypalCaptureId;

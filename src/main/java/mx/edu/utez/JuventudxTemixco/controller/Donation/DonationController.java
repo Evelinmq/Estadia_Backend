@@ -1,14 +1,17 @@
 package mx.edu.utez.JuventudxTemixco.controller.Donation;
 
+import lombok.RequiredArgsConstructor;
 import mx.edu.utez.JuventudxTemixco.Dto.Donation.DonationDTO;
 import mx.edu.utez.JuventudxTemixco.models.donations.BeanDonation;
 import mx.edu.utez.JuventudxTemixco.models.donations.Status;
 import mx.edu.utez.JuventudxTemixco.service.Donation.DonationService;
+import mx.edu.utez.JuventudxTemixco.service.Donation.EmailService;
 import mx.edu.utez.JuventudxTemixco.service.Donation.PayPalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,15 +19,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/Donacion")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequiredArgsConstructor
 public class DonationController {
 
     private final PayPalService payPalService;
-    DonationService donationService;
-
-    public DonationController(DonationService donationService, PayPalService payPalService) {
-        this.donationService = donationService;
-        this.payPalService = payPalService;
-    }
+    private final DonationService donationService;
+    private final EmailService emailService;
 
     @PostMapping("/")
     public ResponseEntity<?> save(@RequestBody BeanDonation donacion){
@@ -42,7 +42,7 @@ public class DonationController {
 
         Optional<BeanDonation> donacion = donationService.findById(id);
 
-        if (donacion == null) {
+        if (donacion.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -51,14 +51,9 @@ public class DonationController {
 
     // Crear orden
     @PostMapping("/paypal/create-order")
-    public ResponseEntity<?> createOrder(
-            @RequestBody Map<String, Integer> request
-    ) {
+    public ResponseEntity<?> createOrder(@RequestBody Map<String, BigDecimal> request) {
 
-        String orderId =
-                payPalService.createOrder(
-                        request.get("monto")
-                );
+        String orderId = payPalService.createOrder(request.get("monto"));
 
         return ResponseEntity.ok(
                 Map.of("orderId", orderId)
@@ -67,39 +62,36 @@ public class DonationController {
 
     // Capturar orden
     @PostMapping("/paypal/capture-order")
-    public ResponseEntity<?> captureOrder(
-            @RequestBody DonationDTO request
-    ) {
+    public ResponseEntity<?> captureOrder(@RequestBody DonationDTO request) {
 
-        Map response =
-                payPalService.captureOrder(
-                        request.getPaypalOrderId()
-                );
+        Map response = payPalService.captureOrder(request.getPaypalOrderId());
 
         // Verificar que PayPal realmente completó el pago
-        String paypalStatus =
-                response.get("status").toString();
+        String paypalStatus = response.get("status").toString();
 
         if (!"COMPLETED".equals(paypalStatus)) {
-            return ResponseEntity.badRequest()
-                    .body("El pago no fue completado.");
+            throw new IllegalArgumentException("El pago no fue completado en la plataforma de PayPal.");
         }
 
         String captureId = payPalService.getCaptureId(response);
 
         if (captureId == null) {
-            return ResponseEntity.badRequest()
-                    .body("No se pudo obtener el ID de la captura.");
+            throw new IllegalArgumentException("No se pudo obtener el ID de la captura de PayPal.");
         }
 
-        BeanDonation donation =
-                request.toEntity();
+        BeanDonation donation = request.toEntity();
 
         donation.setEstado(Status.COMPLETADA);
         donation.setPaypal_capture_id(captureId);
 
-        donation =
-                donationService.save(donation);
+        donation = donationService.save(donation);
+
+        try {
+            emailService.enviarCorreoAgradecimiento(donation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al enviar correo de agradecimiento");
+        }
 
         return ResponseEntity.ok(donation);
     }

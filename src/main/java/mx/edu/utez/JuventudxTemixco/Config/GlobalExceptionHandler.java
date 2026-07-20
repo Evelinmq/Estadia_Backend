@@ -12,21 +12,21 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Captura cuando no se encuentra un recurso (como tu "Section not found")
+    // Captura cuando no se encuentra un recurso
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<CustomResponse> handleRuntimeException(RuntimeException ex) {
         CustomResponse response = new CustomResponse(true, HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // 2. Captura los errores de lógica de negocio (como el IllegalStateException de tu delete)
+    // Captura los errores de lógica de negocio (IllegalStateException)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<CustomResponse> handleIllegalState(IllegalStateException ex) {
         CustomResponse response = new CustomResponse(true, HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // 3. Captura cualquier otro error inesperado del sistema
+    // Captura cualquier otro error inesperado del sistema
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomResponse> handleAllExceptions(Exception ex) {
         CustomResponse response = new CustomResponse(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrió un error inesperado en el servidor");
@@ -46,6 +46,17 @@ public class GlobalExceptionHandler {
         response.put("error", true);
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("errors", errors);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    // Capturador para errores personalizados de negocio (PayPal o BD)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", true);
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("message", ex.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
